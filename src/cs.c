@@ -16,11 +16,23 @@ cs_new( int size )
 int 
 cs_insert( cs_t *cs, int up )
 {
-	/* TODO: Check if conflict set is empty */
-
-
-	printf( "Inserting update %d", up );
-
+	printf( "Inserting update %d by creating generation 0\n", up );
+	
+	cs->min_gen = cs->max_gen = 0;
 	return 1;
 
+}
+
+int
+cs_is_empty( cs_t *cs )
+{
+	if( cs->max_gen == -1 || 
+		cs->min_gen > cs->max_gen )
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
