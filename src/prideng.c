@@ -4,16 +4,29 @@
 
 #include "cs.h"
 
-void png_show_prompt();
-int png_handle_cmd( char *cmd );
+typedef struct
+{
+	cs_t *cs;
+} png_t;
+
+void 
+png_show_prompt();
+
+int
+png_handle_cmd( png_t *png, char *cmd );
 
 int main( int argc, char **argv )
 {
 	char cmd[40];
 	int res;
+	png_t png;
+
+	/* Create confligt set that will be used in
+	 * the application 
+	 */
+	png.cs = cs_new( 10 );
 
 	/* Start taking in user commands */
-	
 	while( 1 )
 	{
 
@@ -23,7 +36,7 @@ int main( int argc, char **argv )
 		fgets( cmd, 40, stdin );
 		cmd[ strlen( cmd ) -1 ] = '\0';
 
-		res = png_handle_cmd( cmd );
+		res = png_handle_cmd( &png, cmd );
 
 		/* Check if the quit command was issued */
 		if( res == 0 )
@@ -32,6 +45,8 @@ int main( int argc, char **argv )
 		}
 
 	}
+
+	free( png.cs );
 	return 0;
 }
 
@@ -40,9 +55,8 @@ void png_show_prompt()
 	printf( "Command> ");
 }
 
-int png_handle_cmd( char *cmd )
+int png_handle_cmd( png_t *png,  char *cmd )
 {
-	cs_t *cs;
 	/* Check what command that was issued */
 	if( strcmp( cmd, "q" ) == 0 ) 
 	{
@@ -51,11 +65,17 @@ int png_handle_cmd( char *cmd )
 	}
 	else if( strcmp( cmd, "add" ) == 0 )
 	{
-		cs = cs_new( 10 );
+		cs_insert( png->cs, 3 );
 		
-		cs_insert( cs, 3 );
+		return 1;
+	}
+	else if( strcmp( cmd, "s") == 0 )
+	{
+		if( cs_is_empty( png->cs ) )
+		{
+			printf( "Conflict set is empty\n" );
+		}
 
-		free( cs );
 		return 1;
 	}
 	else
