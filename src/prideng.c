@@ -46,7 +46,7 @@ int main( int argc, char **argv )
 
 	}
 
-	free( png.cs );
+	cs_free( png.cs );
 	return 0;
 }
 
