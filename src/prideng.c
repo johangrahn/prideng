@@ -52,6 +52,9 @@ int png_handle_cmd( char *cmd )
 	else if( strcmp( cmd, "add" ) == 0 )
 	{
 		cs = cs_new( 10 );
+		
+		cs_insert( cs, 3 );
+
 		free( cs );
 		return 1;
 	}

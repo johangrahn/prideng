@@ -11,5 +11,12 @@ typedef struct c
 cs_t *
 cs_new( int size ); 
 
+/* Insert the update defined in up var
+ *
+ * If there are no room in the conflict set, -1 is returned 
+ */
+int 
+cs_insert( cs_t *cs, int up );
+
 #endif
 
