@@ -8,12 +8,15 @@ typedef struct c
 	int min_gen;
 	int max_gen;
 
-	gen_t *gens;
+	gen_t **gens;
+	
+	int num_gen;
 } cs_t;
 
-/* Creates a new conflict set with a defined size */
+/* Creates a new conflict set with a defined 
+ * number of generations and replicas */
 cs_t *
-cs_new( int size ); 
+cs_new( int gen_size, int replicas ); 
 
 /* Insert the update defined in up var
  *

@@ -24,7 +24,7 @@ int main( int argc, char **argv )
 	/* Create confligt set that will be used in
 	 * the application 
 	 */
-	png.cs = cs_new( 10 );
+	png.cs = cs_new( 10, 1 );
 
 	/* Start taking in user commands */
 	while( 1 )
