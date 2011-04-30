@@ -67,8 +67,7 @@ cs_free( cs_t *cs )
 	/* Remove the memory from each generation */
 	for( i = 0; i < cs->num_gen; i++ )
 	{
-		free( cs->gens[i]->data );
-		free( cs->gens[i] );
+		gen_free( cs->gens[i] );
 	}
 
 	free( cs->gens );

@@ -11,3 +11,11 @@ gen_new( int replicas )
 	g->data = malloc( sizeof(int) * replicas );
 	return g;
 }
+
+void
+gen_free( gen_t *gen )
+{
+	free( gen->data );
+	free( gen );
+	gen = NULL;
+}

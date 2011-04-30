@@ -11,5 +11,9 @@ typedef struct
 gen_t *
 gen_new( int replicas );
 
+/* Removes the memory allocated for the generation */
+void
+gen_free( gen_t *gen );
+
 #endif
 
