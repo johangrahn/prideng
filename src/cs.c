@@ -10,8 +10,10 @@ cs_new( int gen_size, int replicas )
 
 	cs = malloc( sizeof( cs_t ) );
 
-	cs->max_gen = cs->min_gen = -1;
-	
+	/* Reset variables */
+	cs->min_gen = cs->min_pos = -1;
+	cs->max_pos = cs->max_pos = -1;
+
 	/* Create space for the generations */
 	cs->gens = malloc( sizeof( gen_t ) * gen_size );
 	
@@ -56,6 +58,19 @@ cs_is_empty( cs_t *cs )
 	else
 	{
 		return 0;
+	}
+}
+
+void 
+cs_show( cs_t *cs )
+{
+	if( cs_is_empty( cs ) )
+	{
+		printf( "Conflict set is empty\n");
+	}
+	else
+	{
+		printf( "[ ]");
 	}
 }
 

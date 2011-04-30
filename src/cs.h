@@ -5,8 +5,10 @@
 
 typedef struct c 
 {
-	int min_gen;
-	int max_gen;
+
+	int min_gen, min_pos;
+	int max_gen, max_pos;
+
 
 	gen_t **gens;
 	
@@ -30,6 +32,10 @@ cs_insert( cs_t *cs, int up );
  */
 int
 cs_is_empty( cs_t *cs );
+
+/* Prints information about the conflict set */
+void 
+cs_show( cs_t *cs );
 
 /* Removes the memory that have been allocated */
 void 

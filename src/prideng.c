@@ -71,10 +71,7 @@ int png_handle_cmd( png_t *png,  char *cmd )
 	}
 	else if( strcmp( cmd, "s") == 0 )
 	{
-		if( cs_is_empty( png->cs ) )
-		{
-			printf( "Conflict set is empty\n" );
-		}
+		cs_show( png->cs );
 
 		return 1;
 	}
