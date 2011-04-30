@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+/* Increases the position of the generation pointer 
+ * based on its current position and cs size */
+int 
+cs_inc_pos( int gen_pos, int cs_size );
+
 cs_t *
 cs_new( int gen_size, int replicas ) 
 {
@@ -12,7 +18,7 @@ cs_new( int gen_size, int replicas )
 
 	/* Reset variables */
 	cs->min_gen = cs->min_pos = -1;
-	cs->max_pos = cs->max_pos = -1;
+	cs->max_gen = cs->max_pos = -1;
 
 	/* Create space for the generations */
 	cs->gens = malloc( sizeof( gen_t ) * gen_size );
@@ -32,11 +38,23 @@ cs_insert( cs_t *cs, int up )
 {
 	gen_t *g;
 
-	cs->max_gen++;
+	/* No generations have been inserted before */
+	if( cs->max_gen == -1 )
+	{
+		/* Increase generation pointer to point to 
+		 * the new generation 
+		 */
+		cs->max_pos = cs_inc_pos( cs->max_pos, cs->num_gen );
+		cs->max_gen++;
 
-	/* Fetch the current generation */
-	g = cs->gens[ cs->max_gen ];
-	
+		/* Fetch the current generation */
+		g = cs->gens[ cs->max_pos ];
+	}
+	else 
+	{
+
+	}
+
 	g->data[0] = up;
 
 	/* Associate the generation number to the generation */
@@ -89,3 +107,10 @@ cs_free( cs_t *cs )
 	free( cs );
 	cs = NULL;
 }
+
+int
+cs_inc_pos( int gen_pos, int cs_size )
+{
+	return ( gen_pos + 1 ) % cs_size;
+}
+
