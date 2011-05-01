@@ -5,11 +5,19 @@ typedef struct
 {
 	int *data; /* Data for the given generation */
 	int num; /* Generation number */
+
+	int size; /* Stores how many replicas there are */
 } gen_t;
 
 /* Creates memory for the generation and the replica information */
 gen_t *
 gen_new( int replicas );
+
+/* Reset all variables that have been used 
+ * in the gen_t structure
+ */
+void 
+gen_reset( gen_t *g );
 
 /* Removes the memory allocated for the generation */
 void

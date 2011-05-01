@@ -9,7 +9,23 @@ gen_new( int replicas )
 
 	g = malloc( sizeof( gen_t ) );
 	g->data = malloc( sizeof(int) * replicas );
+	
+	g->size = replicas;
+
 	return g;
+}
+
+void 
+gen_reset( gen_t *g )
+{
+	int i;
+
+	g->num = -1;
+
+	for( i = 0; i < g->size; i++ )
+	{
+		g->data[i] = -1;
+	}
 }
 
 void
