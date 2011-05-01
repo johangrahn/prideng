@@ -28,10 +28,16 @@ int
 cs_insert( cs_t *cs, int up );
 
 /* 
- * Returns 0 if the conflict set is empty
+ * Returns 1 if the conflict set is empty
  */
 int
 cs_is_empty( cs_t *cs );
+
+/*
+ * Returns 1 if the conflict set is full 
+ */
+int
+cs_is_full( cs_t *cs );
 
 /* Prints information about the conflict set */
 void 

@@ -65,7 +65,10 @@ int png_handle_cmd( png_t *png,  char *cmd )
 	}
 	else if( strcmp( cmd, "add" ) == 0 )
 	{
-		cs_insert( png->cs, 3 );
+		if( cs_insert( png->cs, 3 ) == -1 )
+		{
+			printf( "Conflict set is full!" );
+		}
 		
 		return 1;
 	}

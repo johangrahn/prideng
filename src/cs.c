@@ -37,7 +37,11 @@ int
 cs_insert( cs_t *cs, int up )
 {
 	gen_t *g;
-
+	
+	if( cs_is_full( cs ) )
+	{
+		return -1;
+	}
 	/* Increase generation pointer to point to 
 	 * the new generation 
 	 */
@@ -71,6 +75,19 @@ cs_is_empty( cs_t *cs )
 	else
 	{
 		return 0;
+	}
+}
+
+int
+cs_is_full( cs_t *cs )
+{
+	if( ( cs->max_gen - cs->min_gen ) < ( cs->num_gen ) )
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
 	}
 }
 
