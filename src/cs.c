@@ -38,22 +38,17 @@ cs_insert( cs_t *cs, int up )
 {
 	gen_t *g;
 
-	/* No generations have been inserted before */
-	if( cs->max_gen == -1 )
-	{
-		/* Increase generation pointer to point to 
-		 * the new generation 
-		 */
-		cs->max_pos = cs_inc_pos( cs->max_pos, cs->num_gen );
-		cs->max_gen++;
+	/* Increase generation pointer to point to 
+	 * the new generation 
+	 */
+	cs->max_pos = cs_inc_pos( cs->max_pos, cs->num_gen );
+	cs->max_gen++;
 
-		/* Fetch the current generation */
-		g = cs->gens[ cs->max_pos ];
-	}
-	else 
-	{
+	/* Fetch the current generation */
+	g = cs->gens[ cs->max_pos ];
 
-	}
+	/* Remove old data from the generation */
+	gen_reset( g );
 
 	g->data[0] = up;
 
