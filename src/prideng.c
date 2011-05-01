@@ -57,22 +57,38 @@ void png_show_prompt()
 
 int png_handle_cmd( png_t *png,  char *cmd )
 {
+	char *curr_cmd;
+
+	curr_cmd = strtok( cmd, " ");
+		
 	/* Check what command that was issued */
-	if( strcmp( cmd, "q" ) == 0 ) 
+	if( strcmp( curr_cmd, "q" ) == 0 ) 
 	{
 		printf( "Quiting..\n" );
 		return 0;
 	}
-	else if( strcmp( cmd, "add" ) == 0 )
+	else if( strcmp( curr_cmd, "add" ) == 0 )
 	{
-		if( cs_insert( png->cs, 3 ) == -1 )
-		{
-			printf( "Conflict set is full!" );
-		}
+		int num_updates, it;
+		char *updates;
 		
+		updates = strtok( NULL, " " );
+		if( updates != NULL)
+			num_updates = atoi( updates );
+		else
+			num_updates = 1;
+
+		for( it = 0; it < num_updates; it++ )
+		{
+			if( cs_insert( png->cs, 3 ) == -1 )
+			{
+				printf( "Conflict set is full!" );
+				break;
+			}
+		}
 		return 1;
 	}
-	else if( strcmp( cmd, "s") == 0 )
+	else if( strcmp( curr_cmd, "s") == 0 )
 	{
 		cs_show( png->cs );
 
