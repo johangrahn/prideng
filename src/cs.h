@@ -39,6 +39,13 @@ cs_is_empty( cs_t *cs );
 int
 cs_is_full( cs_t *cs );
 
+/* Fetches the oldest generation from the conflict set
+ *
+ * If no generation is availble or cs is empty, it return NULL
+ */
+gen_t *
+cs_pop( cs_t *cs );
+
 /* Prints information about the conflict set */
 void 
 cs_show( cs_t *cs );

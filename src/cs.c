@@ -91,6 +91,28 @@ cs_is_full( cs_t *cs )
 	}
 }
 
+gen_t *
+cs_pop( cs_t *cs )
+{
+	gen_t *g;
+
+	if( cs_is_empty( cs ) )
+	{
+		return NULL;
+	}
+
+	if( cs->min_gen == -1 )
+	{
+		cs->min_gen = 0;
+		cs->min_pos = 0;
+	}
+
+	g = cs->gens[ cs->min_gen ];
+	cs->min_gen++;
+	cs->min_pos = cs_inc_pos( cs->min_pos, cs->num_gen );
+	return g;
+}
+
 void 
 cs_show( cs_t *cs )
 {
@@ -110,7 +132,7 @@ cs_show( cs_t *cs )
 			g_pos = cs->min_pos;
 
 		/* Iterate trough each generation */
-		for( g_it = cs->min_gen; g_it < cs->max_gen; g_it++, g_pos++ )
+		for( g_it = cs->min_gen; g_it <= cs->max_gen; g_it++, g_pos++ )
 		{
 			g = cs->gens[ g_pos ];
 			printf("%d:[ ", g->num );

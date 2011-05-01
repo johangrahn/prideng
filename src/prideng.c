@@ -94,6 +94,24 @@ int png_handle_cmd( png_t *png,  char *cmd )
 
 		return 1;
 	}
+	else if( strcmp( curr_cmd, "stab") == 0)
+	{
+		gen_t *g;
+
+		/* Fetches the oldest generation */
+		g = cs_pop( png->cs );
+		if( g != NULL )
+		{
+			printf( "Generation %d stabilized\n", g->num );
+		}
+		else
+		{
+			printf( "No generation to stabilize is found\n");
+		}
+
+		return 1;
+
+	}
 	else
 	{
 		return -1;
