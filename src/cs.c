@@ -77,13 +77,41 @@ cs_is_empty( cs_t *cs )
 void 
 cs_show( cs_t *cs )
 {
+	int g_it, g_pos, rep_it;
+	gen_t *g;
 	if( cs_is_empty( cs ) )
 	{
 		printf( "Conflict set is empty\n");
 	}
 	else
 	{
-		printf( "[ ]");
+
+		/* Set the first position if the conflict set */
+		if(cs->min_gen == -1 )
+			g_pos = 0;
+		else
+			g_pos = cs->min_pos;
+
+		/* Iterate trough each generation */
+		for( g_it = cs->min_gen; g_it < cs->max_gen; g_it++, g_pos++ )
+		{
+			g = cs->gens[ g_pos ];
+			printf("%d:[ ", g->num );
+		
+			/* Iterate through all replica information 
+			 * on the given generation */
+			for( rep_it = 0; rep_it < g->size; rep_it++ )
+			{
+				printf("%d", g->data[rep_it] );
+				
+				if( rep_it != (g->size - 1 ) )
+				{
+					printf( " |");
+				}
+			}
+
+			printf( " ]\n");
+		}
 	}
 }
 
