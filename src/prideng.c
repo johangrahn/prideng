@@ -103,6 +103,7 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		if( g != NULL )
 		{
 			printf( "Generation %d stabilized\n", g->num );
+			gen_free( g );
 		}
 		else
 		{

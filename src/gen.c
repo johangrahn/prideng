@@ -28,6 +28,27 @@ gen_reset( gen_t *g )
 	}
 }
 
+gen_t *
+gen_copy( gen_t *g )
+{
+	gen_t *g_new;
+	int it;
+
+	g_new = malloc( sizeof( gen_t ) );
+
+	g_new->size = g->size;
+	g_new->num = g->num;
+
+	g_new->data = malloc( sizeof(int) * g->size );
+	
+	for( it = 0; it < g->size; it++ )
+	{
+		g_new->data[it] = g->data[it];
+	}
+
+	return g_new;
+}
+
 void
 gen_free( gen_t *gen )
 {

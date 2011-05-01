@@ -107,10 +107,14 @@ cs_pop( cs_t *cs )
 		cs->min_pos = 0;
 	}
 
-	g = cs->gens[ cs->min_gen ];
+	g = cs->gens[ cs->min_pos ];
 	cs->min_gen++;
 	cs->min_pos = cs_inc_pos( cs->min_pos, cs->num_gen );
-	return g;
+	
+	/* Return a copy of the data so that it 
+	 * doesn't get overriten 
+	 */
+	return gen_copy( g );
 }
 
 void 

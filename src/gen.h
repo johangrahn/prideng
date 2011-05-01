@@ -13,6 +13,11 @@ typedef struct
 gen_t *
 gen_new( int replicas );
 
+/* Copy all memory that have been allocated */
+gen_t *
+gen_copy( gen_t *g );
+
+
 /* Reset all variables that have been used 
  * in the gen_t structure
  */
