@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #include "cs.h"
+#include "prop.h"
 
 typedef struct
 {
@@ -17,14 +19,21 @@ png_handle_cmd( png_t *png, char *cmd );
 
 int main( int argc, char **argv )
 {
-	char cmd[40];
-	int res;
-	png_t png;
+	char 		cmd[40];
+	int 		res;
+	png_t 		png;
+	pthread_t 	p_thread;
 
 	/* Create confligt set that will be used in
 	 * the application 
 	 */
 	png.cs = cs_new( 10, 1 );
+
+	/* Create threads for propagation, 
+	 * stabilization and conflict resolution 
+	 */
+	pthread_create( &p_thread, NULL, prop_thread, &png );
+	
 
 	/* Start taking in user commands */
 	while( 1 )
@@ -45,6 +54,9 @@ int main( int argc, char **argv )
 		}
 
 	}
+
+	/* Stops the propagation thread */
+	pthread_cancel( p_thread );
 
 	cs_free( png.cs );
 	return 0;
