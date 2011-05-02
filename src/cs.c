@@ -135,6 +135,8 @@ cs_show( cs_t *cs )
 		else
 			g_pos = cs->min_pos;
 
+		printf( "Full: %s\n", cs_is_full( cs ) == 1 ? "Yes" : "No" );
+		
 		/* Iterate trough each generation */
 		for( g_it = cs->min_gen; g_it <= cs->max_gen; g_it++, g_pos++ )
 		{
