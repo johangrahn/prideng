@@ -66,6 +66,8 @@ int main( int argc, char **argv )
 	/* Stops the propagation thread */
 	pthread_cancel( p_thread );
 
+	pthread_cond_destroy( &prop_signal );
+	pthread_mutex_destroy( &prop_sig_lock );
 	cs_free( png.cs );
 	return 0;
 }
