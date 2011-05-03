@@ -1,15 +1,11 @@
+#include "cs.h"
+#include "prop.h"
+#include "png.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <pthread.h>
-
-#include "cs.h"
-#include "prop.h"
-
-typedef struct
-{
-	cs_t *cs;
-} png_t;
 
 void 
 png_show_prompt();
@@ -23,11 +19,23 @@ int main( int argc, char **argv )
 	int 		res;
 	png_t 		png;
 	pthread_t 	p_thread;
+	
+	/* Signal that happends when conflict set 
+	 * needs to propagate a generation 
+	 */
+	pthread_cond_t prop_signal;
+	pthread_mutex_t prop_sig_lock;
+
+	pthread_cond_init( &prop_signal, NULL );
+	pthread_mutex_init( &prop_sig_lock, NULL );
+
 
 	/* Create confligt set that will be used in
 	 * the application 
 	 */
 	png.cs = cs_new( 10, 1 );
+	png.prop_sig = &prop_signal;
+	png.prop_sig_lock = &prop_sig_lock;
 
 	/* Create threads for propagation, 
 	 * stabilization and conflict resolution 
@@ -99,6 +107,15 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			}
 		}
 		return 1;
+	}
+	else if( strcmp( curr_cmd, "prop") == 0 )
+	{
+		pthread_mutex_lock( png->prop_sig_lock );
+		pthread_cond_signal( png->prop_sig );
+		pthread_mutex_unlock( png->prop_sig_lock );
+
+		return 1;
+
 	}
 	else if( strcmp( curr_cmd, "s") == 0 )
 	{
