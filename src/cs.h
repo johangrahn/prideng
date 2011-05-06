@@ -8,7 +8,7 @@ typedef struct c
 
 	int min_gen, min_pos;
 	int max_gen, max_pos;
-
+	int prop_gen, prop_pos;
 
 	gen_t **gens;
 	

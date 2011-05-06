@@ -19,6 +19,7 @@ cs_new( int gen_size, int replicas )
 	/* Reset variables */
 	cs->min_gen = cs->min_pos = -1;
 	cs->max_gen = cs->max_pos = -1;
+	cs->prop_gen = cs->prop_pos = -1;
 
 	/* Create space for the generations */
 	cs->gens = malloc( sizeof( gen_t ) * gen_size );
