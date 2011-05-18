@@ -41,10 +41,16 @@ prop_thread( void* data )
 			start_pos = 0;
 		
 		}	
+		else if( cs->prop_gen == cs->max_gen )
+		{
+			/* No propagation is needed */
+			printf( "[Prop Thread] No propagation is needed\n" );
+			continue; 
+		}
 		else
 		{
-			start_gen = cs->prop_gen;
-			start_pos = cs->prop_pos;
+			start_gen = cs->prop_gen + 1;
+			start_pos = cs->prop_pos + 1;
 		}
 		
 	
@@ -68,8 +74,8 @@ prop_thread( void* data )
 			start_pos++;
 		}
 		
-		cs->prop_gen = end_gen + 1;
-		cs->prop_pos = start_pos + 1;
+		cs->prop_gen = end_gen;
+		cs->prop_pos = start_pos;
 		
 	}
 	
