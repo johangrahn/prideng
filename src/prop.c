@@ -33,9 +33,7 @@ prop_thread( void* data )
 
 		/* Check if propagation has already been performed */
 		if( cs->prop_gen == -1 )
-		{
-		
-		
+		{	
 			/* Start at the begining */
 			start_gen = 0;
 			start_pos = 0;
@@ -60,7 +58,7 @@ prop_thread( void* data )
 		for( it = start_gen; it <= end_gen; it++ )
 		{
 			/* Fetch the generation */
-			g = cs->gens[ start_pos ];
+			g = cs->gens[ it ];
 		
 			/* Check if it needs to be propagated 
 			 * TODO: Add correct checkup 
