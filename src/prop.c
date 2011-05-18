@@ -63,7 +63,7 @@ prop_thread( void* data )
 			/* Check if it needs to be propagated 
 			 * TODO: Add correct checkup 
 			*/
-			if( g->data[0] != -1 )
+			if( g->data->data != -1 )
 			{
 				printf( "[Prop Thread] Propagating generation %d\n", g->num );
 			}

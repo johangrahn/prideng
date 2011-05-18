@@ -8,7 +8,7 @@ gen_new( int replicas )
 	gen_t *g;
 
 	g = malloc( sizeof( gen_t ) );
-	g->data = malloc( sizeof(int) * replicas );
+	g->data = malloc( sizeof( gen_data_t ) * replicas );
 	
 	g->size = replicas;
 
@@ -24,7 +24,7 @@ gen_reset( gen_t *g )
 
 	for( i = 0; i < g->size; i++ )
 	{
-		g->data[i] = -1;
+		g->data->type = NONE;
 	}
 }
 
@@ -39,7 +39,7 @@ gen_copy( gen_t *g )
 	g_new->size = g->size;
 	g_new->num = g->num;
 
-	g_new->data = malloc( sizeof(int) * g->size );
+	g_new->data = malloc(sizeof( gen_data_t ) * g->size );
 	
 	for( it = 0; it < g->size; it++ )
 	{

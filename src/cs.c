@@ -55,7 +55,8 @@ cs_insert( cs_t *cs, int up )
 	/* Remove old data from the generation */
 	gen_reset( g );
 
-	g->data[0] = up;
+	g->data->data = up;
+	g->data->type = UPDATE;
 
 	/* Associate the generation number to the generation */
 	g->num = cs->max_gen;
@@ -164,7 +165,7 @@ cs_show( cs_t *cs )
 			 * on the given generation */
 			for( rep_it = 0; rep_it < g->size; rep_it++ )
 			{
-				printf("%d", g->data[rep_it] );
+				printf("%d", g->data[rep_it].data );
 				
 				if( rep_it != (g->size - 1 ) )
 				{
