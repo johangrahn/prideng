@@ -109,13 +109,28 @@ cs_pop( cs_t *cs )
 	}
 
 	g = cs->gens[ cs->min_pos ];
-	cs->min_gen++;
-	cs->min_pos = cs_inc_pos( cs->min_pos, cs->num_gen );
 	
-	/* Return a copy of the data so that it 
-	 * doesn't get overriten 
-	 */
-	return gen_copy( g );
+	/* Check so that the generation have already been propagated, 
+	 * or it is a remote update */
+	if( g->num <= cs->prop_gen )
+	{	
+		cs->min_gen++;
+		cs->min_pos = cs_inc_pos( cs->min_pos, cs->num_gen );
+
+		/* Return a copy of the data so that it 
+		 * doesn't get overriten 
+		 */
+		return gen_copy( g );
+	}
+	else
+	{
+		printf( "Failed to stablize, generation %d is not propagated\n ", g->num );
+		
+		return NULL;
+	}
+	
+	
+
 }
 
 void 
