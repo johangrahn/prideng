@@ -11,10 +11,8 @@ prop_thread( void* data )
 	pthread_mutex_t *prop_sig_lock;
 	cs_t 			*cs;
 	gen_t 			*g;
-	int 			prop_gen;
-	int 			prop_pos;
 	int 			it;
-	int start_gen, start_pos, end_gen, end_pos;
+	int start_gen, start_pos, end_gen;
 	
 	prop_sig = ((png_t*)data)->prop_sig;
 	prop_sig_lock = ((png_t*)data)->prop_sig_lock;
