@@ -136,17 +136,21 @@ int png_handle_cmd( png_t *png,  char *cmd )
 	{
 		char *host;
 		int port;
+		int rep_id;
 		rep_t rep;
 		
+		rep_id = atoi( strtok( NULL, " " ) );
 		host = strtok( NULL, " " );
-		port = atoi(strtok( NULL, " " ) );
+		port = atoi( strtok( NULL, " " ) );
 		
 		strncpy( rep.host, host, strlen( host ) + 1 );
 		rep.port = port;
-		
+		rep.id = rep_id;
+
+		/* Add the replica to the replica list */
 		rep_list_add( &png->rlist, &rep );
 		
-		printf( "Replica %s:%d was added\n", host, port );
+		printf( "Replica %d:%s:%d was added\n", rep_id, host, port );
 		
 		return 1;
 	}
