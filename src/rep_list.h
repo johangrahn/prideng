@@ -24,4 +24,9 @@ rep_list_add( rep_list_t *repl, rep_t *rep );
 void
 rep_list_free( rep_list_t *repl );
 
+
+/* Parses a string to get the replica info */
+int
+rep_parse_str( char *str, rep_t *rep );
+
 #endif

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <getopt.h>
 
 
 
@@ -14,6 +15,9 @@ png_show_prompt();
 
 int
 png_handle_cmd( png_t *png, char *cmd );
+
+int 
+png_handle_args(png_t *png, int argc, char **argv );
 
 int main( int argc, char **argv )
 {
@@ -44,7 +48,9 @@ int main( int argc, char **argv )
 	 * stabilization and conflict resolution 
 	 */
 	pthread_create( &p_thread, NULL, prop_thread, &png );
-	
+
+
+	png_handle_args( &png, argc, argv );
 
 	/* Start taking in user commands */
 	while( 1 )
@@ -134,23 +140,25 @@ int png_handle_cmd( png_t *png,  char *cmd )
 	
 	else if( strcmp( curr_cmd, "rep" ) == 0 )
 	{
-		char *host;
-		int port;
-		int rep_id;
 		rep_t rep;
-		
-		rep_id = atoi( strtok( NULL, " " ) );
+		char *host;
+		int id;
+		int port;
+	
+		id = atoi( strtok( NULL, " " ) );
 		host = strtok( NULL, " " );
 		port = atoi( strtok( NULL, " " ) );
-		
+	
+		rep.id = id;
 		strncpy( rep.host, host, strlen( host ) + 1 );
 		rep.port = port;
-		rep.id = rep_id;
+
+	
 
 		/* Add the replica to the replica list */
 		rep_list_add( &png->rlist, &rep );
 		
-		printf( "Replica %d:%s:%d was added\n", rep_id, host, port );
+		printf( "Replica %d:%s:%d was added\n", rep.id, rep.host, rep.port );
 		
 		return 1;
 	}
@@ -180,3 +188,31 @@ int png_handle_cmd( png_t *png,  char *cmd )
 	}
 }
 
+int 
+png_handle_args(png_t *png, int argc, char **argv )
+{
+	char *filename, line[50];
+	FILE *fp;
+	int arg;
+	
+	while( ( arg = getopt( argc, argv, "c:") ) != -1 )
+	{
+		switch( arg )
+		{
+			case 'c':
+			{
+				filename = optarg;
+
+				fp = fopen( filename, "r" );
+				while( fgets( line, 50, fp ) )
+				{
+
+					png_handle_cmd( png, line );
+				}
+
+				fclose( fp );
+			}
+		}
+	}
+	
+}
