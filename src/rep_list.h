@@ -20,4 +20,7 @@ rep_list_init( rep_list_t *repl );
 void
 rep_list_add( rep_list_t *repl, rep_t *rep );
 
+void
+rep_list_free( rep_list_t *repl );
+
 #endif

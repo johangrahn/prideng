@@ -68,11 +68,13 @@ int main( int argc, char **argv )
 
 	/* Stops the propagation thread */
 	pthread_cancel( p_thread );
-	pthread_join( p_thread );
+	pthread_join( p_thread, NULL );
 
 	pthread_cond_destroy( &prop_signal );
 	pthread_mutex_destroy( &prop_sig_lock );
+	
 	cs_free( png.cs );
+	rep_list_free( &png.rlist );
 	return 0;
 }
 
@@ -83,9 +85,9 @@ void png_show_prompt()
 
 int png_handle_cmd( png_t *png,  char *cmd )
 {
-	char *curr_cmd, *save_ptr;
+	char *curr_cmd;
 
-	curr_cmd = strtok_r( cmd, " ", &save_ptr );
+	curr_cmd = strtok( cmd, " " );
 		
 	/* Check what command that was issued */
 	if( strcmp( curr_cmd, "q" ) == 0 ) 
@@ -136,8 +138,8 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		int port;
 		rep_t rep;
 		
-		host = strtok_r( NULL, " ", &save_ptr );
-		port = atoi( strtok_r( NULL, " ", &save_ptr ) );
+		host = strtok( NULL, " " );
+		port = atoi(strtok( NULL, " " ) );
 		
 		strncpy( rep.host, host, strlen( host ) + 1 );
 		rep.port = port;
