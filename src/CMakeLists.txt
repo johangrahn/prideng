@@ -3,6 +3,7 @@ set( SOURCES
 	cs.c
 	gen.c
 	prop.c
+	rep_list.c
 )
 
 add_executable( prideng ${SOURCES} )

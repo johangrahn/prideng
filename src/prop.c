@@ -13,11 +13,14 @@ prop_thread( void* data )
 	gen_t 			*g;
 	int 			it;
 	int start_gen, start_pos, end_gen;
+	rep_list_t		*rlist;
 	
-	prop_sig = ((png_t*)data)->prop_sig;
-	prop_sig_lock = ((png_t*)data)->prop_sig_lock;
-	cs = ((png_t*)data)->cs;
-
+	prop_sig 		= ((png_t*)data)->prop_sig;
+	prop_sig_lock 	= ((png_t*)data)->prop_sig_lock;
+	cs 				= ((png_t*)data)->cs;
+	rlist 			= &((png_t*)data)->rlist;
+	
+	
 	printf( "[Prop Thread] Thread started\n" );
 
 	while( 1 )
@@ -63,7 +66,16 @@ prop_thread( void* data )
 			*/
 			if( g->data->data != -1 )
 			{
-				printf( "[Prop Thread] Propagating generation %d\n", g->num );
+				int it;
+				
+				for( it = 0; it < rlist->size; it++ )
+				{
+					
+					printf( "[Prop Thread] Propagating generation %d to %s:%d\n",
+						g->num,
+						rlist->reps[it].host, 
+						rlist->reps[it].port );
+				}
 			}
 		
 			/* TODO: Increase with modulus function */

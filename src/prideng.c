@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+
+
 void 
 png_show_prompt();
 
@@ -36,6 +38,7 @@ int main( int argc, char **argv )
 	png.cs = cs_new( 10, 1 );
 	png.prop_sig = &prop_signal;
 	png.prop_sig_lock = &prop_sig_lock;
+	rep_list_init( &png.rlist );
 
 	/* Create threads for propagation, 
 	 * stabilization and conflict resolution 
@@ -80,9 +83,9 @@ void png_show_prompt()
 
 int png_handle_cmd( png_t *png,  char *cmd )
 {
-	char *curr_cmd;
+	char *curr_cmd, *save_ptr;
 
-	curr_cmd = strtok( cmd, " ");
+	curr_cmd = strtok_r( cmd, " ", &save_ptr );
 		
 	/* Check what command that was issued */
 	if( strcmp( curr_cmd, "q" ) == 0 ) 
@@ -126,6 +129,26 @@ int png_handle_cmd( png_t *png,  char *cmd )
 
 		return 1;
 	}
+	
+	else if( strcmp( curr_cmd, "rep" ) == 0 )
+	{
+		char *host;
+		int port;
+		rep_t rep;
+		
+		host = strtok_r( NULL, " ", &save_ptr );
+		port = atoi( strtok_r( NULL, " ", &save_ptr ) );
+		
+		strncpy( rep.host, host, strlen( host ) + 1 );
+		rep.port = port;
+		
+		rep_list_add( &png->rlist, &rep );
+		
+		printf( "Replica %s:%d was added\n", host, port );
+		
+		return 1;
+	}
+	
 	else if( strcmp( curr_cmd, "stab") == 0)
 	{
 		gen_t *g;
@@ -150,3 +173,4 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		return -1;
 	}
 }
+
