@@ -37,21 +37,3 @@ rep_list_free( rep_list_t *repl )
 {
 	free( repl->reps );
 }
-
-int
-rep_parse_str( char *str, rep_t *rep )
-{
-	char *host;
-	int id;
-	int port;
-	
-	id = atoi( strtok( NULL, " " ) );
-	host = strtok( NULL, " " );
-	port = atoi( strtok( NULL, " " ) );
-	
-	rep->id = id;
-	strncpy( rep->host, host, strlen( host ) + 1 );
-	rep->port = port;
-
-	return 1;
-}
