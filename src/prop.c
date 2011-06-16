@@ -1,5 +1,6 @@
 #include "prop.h"
 #include "png.h"
+#include "network.h"
 
 #include <stdio.h>
 #include <pthread.h>
@@ -67,14 +68,17 @@ prop_thread( void* data )
 			if( g->data->data != -1 )
 			{
 				int it;
-				
+				rep_t *rep;
 				for( it = 0; it < rlist->size; it++ )
 				{
-					
+					rep = &rlist->reps[it];
+
 					printf( "[Prop Thread] Propagating generation %d to %s:%d\n",
 						g->num,
 						rlist->reps[it].host, 
 						rlist->reps[it].port );
+
+					net_create_tcp_socket( rep->host, rep->port );
 				}
 			}
 		

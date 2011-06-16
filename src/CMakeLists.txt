@@ -4,6 +4,7 @@ set( SOURCES
 	gen.c
 	prop.c
 	rep_list.c
+	network.c
 )
 
 add_executable( prideng ${SOURCES} )
