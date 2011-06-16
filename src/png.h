@@ -19,6 +19,11 @@ typedef struct
 	*/
 	int lport;
 	
+	/* 
+	 * Unique replica id to identify the replica 
+	 */
+	int id;
+
 } png_t;
 
 

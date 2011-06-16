@@ -54,6 +54,12 @@ int main( int argc, char **argv )
 
 	png_handle_args( &png, argc, argv );
 
+	if( png.id == -1 )
+	{
+		printf( "You must set a replica id!\n" );
+		exit( 1 );
+	}
+
 	if( png.lport != -1 )
 	{
 		/* Create a TCP server socket */
@@ -65,7 +71,7 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-
+	
 	/* Start taking in user commands */
 	while( 1 )
 	{
@@ -215,8 +221,9 @@ png_handle_args(png_t *png, int argc, char **argv )
 	int arg;
 	
 	png->lport = -1;
-	
-	while( ( arg = getopt( argc, argv, "c:l:") ) != -1 )
+	png->id = -1;
+
+	while( ( arg = getopt( argc, argv, "c:l:r:") ) != -1 )
 	{
 		switch( arg )
 		{
@@ -237,6 +244,10 @@ png_handle_args(png_t *png, int argc, char **argv )
 			}
 			break;
 			
+			case 'r':
+				png->id = atoi( optarg );
+			break;
+
 			case 'l':
 				
 				printf( "Listens for connections on port %s\n", optarg );
