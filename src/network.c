@@ -72,3 +72,69 @@ net_create_tcp_socket( char *host, int port )
     return connectSocket;
 
 }
+
+int 
+net_create_tcp_server( int port )
+{
+
+	int             listenSocket;
+    struct addrinfo hints,
+                    *servinfo,
+                    *p;
+    char            port_str[10];
+    int             rv,
+                    yes=1;
+
+
+    memset( &hints, 0, sizeof hints );
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE; // use my IP
+
+    snprintf( port_str, sizeof(port_str), "%d", port );
+    if ((rv = getaddrinfo(NULL, port_str, &hints, &servinfo)) != 0) {
+         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+         exit( 1 );
+    }
+
+    for(p = servinfo; p != NULL; p = p->ai_next) {
+        if ((listenSocket = socket(p->ai_family, p->ai_socktype,
+                p->ai_protocol)) == -1) {
+            perror("server: socket");
+            continue;
+        }
+
+		
+        if (setsockopt(listenSocket, SOL_SOCKET, SO_REUSEADDR, &yes,
+                sizeof(int)) == -1) {
+            perror("setsockopt");
+            exit(1);
+        }
+		
+		
+        if (bind(listenSocket, p->ai_addr, p->ai_addrlen) == -1) {
+            close( listenSocket );
+            /* __DEBUG( "bind: %s", strerror(errno)); */
+            continue;
+        }
+		
+        break;
+    }
+
+    if( p == NULL )  {
+        printf( "Failed to bind to port: %s", port_str );
+        return -1;
+    }
+    
+    freeaddrinfo(servinfo); 
+
+
+
+    if (listen(listenSocket, 10) == -1) {
+        perror("listen");
+        return -1;
+    }
+
+
+	return listenSocket;
+}

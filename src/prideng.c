@@ -1,6 +1,7 @@
 #include "cs.h"
 #include "prop.h"
 #include "png.h"
+#include "network.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -23,6 +24,7 @@ int main( int argc, char **argv )
 {
 	char 		cmd[40];
 	int 		res;
+	int			lsock;
 	png_t 		png;
 	pthread_t 	p_thread;
 	
@@ -51,6 +53,18 @@ int main( int argc, char **argv )
 
 
 	png_handle_args( &png, argc, argv );
+
+	if( png.lport != -1 )
+	{
+		/* Create a TCP server socket */
+		lsock = net_create_tcp_server( png.lport );
+	}
+	else
+	{
+		printf( "You must set a listen port!\n" );
+		exit( 1 );
+	}
+
 
 	/* Start taking in user commands */
 	while( 1 )
@@ -194,6 +208,8 @@ png_handle_args(png_t *png, int argc, char **argv )
 	char *filename, line[50];
 	FILE *fp;
 	int arg;
+	
+	png->lport = -1;
 	
 	while( ( arg = getopt( argc, argv, "c:l:") ) != -1 )
 	{

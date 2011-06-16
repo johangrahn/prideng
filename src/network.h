@@ -4,5 +4,7 @@
 int 
 net_create_tcp_socket( char *host, int port );
 
-#endif 
+int
+net_create_tcp_server( int port );
 
+#endif 
