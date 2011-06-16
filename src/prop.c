@@ -68,7 +68,9 @@ prop_thread( void* data )
 			if( g->data->data != -1 )
 			{
 				int it;
+				int rep_sock;
 				rep_t *rep;
+
 				for( it = 0; it < rlist->size; it++ )
 				{
 					rep = &rlist->reps[it];
@@ -78,7 +80,23 @@ prop_thread( void* data )
 						rlist->reps[it].host, 
 						rlist->reps[it].port );
 
-					net_create_tcp_socket( rep->host, rep->port );
+					/* Check if a connection already exists */
+					if( rep->sock == -1 )
+					{
+
+
+						/* Connect to the replica */
+						rep_sock = net_create_tcp_socket( rep->host, rep->port );
+					
+						if(	rep_sock == -1 )
+						{
+							printf( "Failed to connect to replica on %s:%d\n", rep->host, rep->port );
+						}
+						else
+						{
+							rep->sock = rep_sock;
+						}
+					}
 				}
 			}
 		

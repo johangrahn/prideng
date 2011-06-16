@@ -6,6 +6,7 @@ typedef struct
 	char 	host[40];
 	int 	port;
 	int		id;
+	int		sock;
 } rep_t;
 
 typedef struct 

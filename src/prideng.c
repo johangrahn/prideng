@@ -167,6 +167,11 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		strncpy( rep.host, host, strlen( host ) + 1 );
 		rep.port = port;
 
+		/* 
+		 * Reseting the socket so that we know that there
+		 * is no connection at first
+		 */
+		rep.sock = -1;
 	
 
 		/* Add the replica to the replica list */
