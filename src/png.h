@@ -12,6 +12,13 @@ typedef struct
 	cs_t *cs;
 	pthread_mutex_t *prop_sig_lock;
 	pthread_cond_t *prop_sig;
+	
+	/* 
+		Port number where the application listens to 
+		for incoming connections
+	*/
+	int lport;
+	
 } png_t;
 
 

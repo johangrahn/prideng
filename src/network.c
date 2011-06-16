@@ -29,7 +29,7 @@ net_create_tcp_socket( char *host, int port )
     memset( &hints, 0, sizeof hints );
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE; // use my IP
+    hints.ai_flags = AI_PASSIVE; 
 
     snprintf( port_str, sizeof(port_str), "%d", port );
 
@@ -38,7 +38,7 @@ net_create_tcp_socket( char *host, int port )
          return -1;
     }
 
-     // loop through all the results and bind to the first we can
+     /* loop through all the results and bind to the first we can */
     for(p = servinfo; p != NULL; p = p->ai_next) {
         if ((connectSocket = socket(p->ai_family, p->ai_socktype,
                 p->ai_protocol)) == -1) {
@@ -56,7 +56,7 @@ net_create_tcp_socket( char *host, int port )
 
         if (connect( connectSocket, p->ai_addr, p->ai_addrlen) == -1) {
             close( connectSocket );
-            __DEBUG( "network_create_tcp_socket: %s", strerror(errno));
+            /*__DEBUG( "network_create_tcp_socket: %s", strerror(errno)); */
             continue;
         }
 
@@ -67,7 +67,7 @@ net_create_tcp_socket( char *host, int port )
         return -1;
     }
 
-    freeaddrinfo(servinfo); // all done with this structure
+    freeaddrinfo(servinfo); 
 
     return connectSocket;
 

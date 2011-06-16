@@ -195,7 +195,7 @@ png_handle_args(png_t *png, int argc, char **argv )
 	FILE *fp;
 	int arg;
 	
-	while( ( arg = getopt( argc, argv, "c:") ) != -1 )
+	while( ( arg = getopt( argc, argv, "c:l:") ) != -1 )
 	{
 		switch( arg )
 		{
@@ -203,6 +203,8 @@ png_handle_args(png_t *png, int argc, char **argv )
 			{
 				filename = optarg;
 
+				printf( "Reading data from file %s\n", filename );
+				
 				fp = fopen( filename, "r" );
 				while( fgets( line, 50, fp ) )
 				{
@@ -212,7 +214,16 @@ png_handle_args(png_t *png, int argc, char **argv )
 
 				fclose( fp );
 			}
+			break;
+			
+			case 'l':
+				
+				printf( "Listens for connections on port %s\n", optarg );
+				png->lport = atoi( optarg );
+			break;
 		}
 	}
+	
+	return 1;
 	
 }
