@@ -89,7 +89,7 @@ net_create_tcp_server( int port )
     memset( &hints, 0, sizeof hints );
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE; // use my IP
+    hints.ai_flags = AI_PASSIVE; 
 
     snprintf( port_str, sizeof(port_str), "%d", port );
     if ((rv = getaddrinfo(NULL, port_str, &hints, &servinfo)) != 0) {
