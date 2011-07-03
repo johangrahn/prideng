@@ -14,8 +14,9 @@ prop_thread( void* data )
 	gen_t 			*g;
 	int 			it;
 	int start_gen, start_pos, end_gen;
+	int				prop_fail;
 	rep_list_t		*rlist;
-	
+
 	prop_sig 		= ((png_t*)data)->prop_sig;
 	prop_sig_lock 	= ((png_t*)data)->prop_sig_lock;
 	cs 				= ((png_t*)data)->cs;
@@ -56,7 +57,8 @@ prop_thread( void* data )
 	
 		/* Fetch the newest generaton that have been inserted */
 		end_gen = cs->max_gen;
-	
+		
+		prop_fail = 0;
 		for( it = start_gen; it <= end_gen; it++ )
 		{
 			/* Fetch the generation */
@@ -84,13 +86,15 @@ prop_thread( void* data )
 					if( rep->sock == -1 )
 					{
 
-
+						
 						/* Connect to the replica */
 						rep_sock = net_create_tcp_socket( rep->host, rep->port );
 					
 						if(	rep_sock == -1 )
 						{
 							printf( "Failed to connect to replica on %s:%d\n", rep->host, rep->port );
+							prop_fail = 1;
+							break;
 						}
 						else
 						{
@@ -99,7 +103,13 @@ prop_thread( void* data )
 					}
 				}
 			}
-		
+			
+			/* Failure in propagation, need to abort */
+			if( prop_fail != 0 )
+			{
+				break;
+			}
+
 			/* TODO: Increase with modulus function */
 			start_pos++;
 		}

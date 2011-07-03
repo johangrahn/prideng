@@ -28,6 +28,11 @@ receiver_thread( void *data )
 	struct sockaddr_storage their_addr;
 
 	png = (png_t *)data;
+	
+	addr_len = sizeof( their_addr );
+	
+	FD_ZERO( &read_fds );
+	FD_ZERO( &master );
 
 	printf( "[Receiver Thread] Starting thread\n" );
 
@@ -41,14 +46,15 @@ receiver_thread( void *data )
 		/* Listens to the sockets connected and see 
 		 * when there is data there
 		 */
-		if( select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1 ) {
+		if( select( fdmax + 1, &read_fds, NULL, NULL, NULL) == -1 ) 
+		{
 			printf( "select: %s", strerror(errno) );
 		}
 		
 		/*
 		 * Iterate through each connection 
 		 */
-		for( i = 0; i < fdmax; i++ )
+		for( i = 0; i <= fdmax; i++ )
 		{
 			if( FD_ISSET( i, &read_fds ) ) 
 			{

@@ -48,12 +48,6 @@ int main( int argc, char **argv )
 	png.prop_sig_lock = &prop_sig_lock;
 	rep_list_init( &png.rlist );
 
-	/* Create threads for propagation, 
-	 * and receving  
-	 */
-	pthread_create( &p_thread, NULL, prop_thread, &png );
-	pthread_create( &r_thread, NULL, receiver_thread, &png );
-
 	png_handle_args( &png, argc, argv );
 
 	if( png.id == -1 )
@@ -73,6 +67,12 @@ int main( int argc, char **argv )
 		printf( "You must set a listen port!\n" );
 		exit( 1 );
 	}
+
+	/* Create threads for propagation, 
+	 * and receving  
+	 */
+	pthread_create( &p_thread, NULL, prop_thread, &png );
+	pthread_create( &r_thread, NULL, receiver_thread, &png );
 
 	
 	/* Start taking in user commands */
