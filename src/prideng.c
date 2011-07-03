@@ -2,6 +2,7 @@
 #include "prop.h"
 #include "png.h"
 #include "network.h"
+#include "receiver.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -26,8 +27,9 @@ int main( int argc, char **argv )
 	int 		res;
 	int			lsock;
 	png_t 		png;
-	pthread_t 	p_thread;
-	
+	pthread_t 	p_thread,
+				r_thread;
+
 	/* Signal that happends when conflict set 
 	 * needs to propagate a generation 
 	 */
@@ -47,10 +49,10 @@ int main( int argc, char **argv )
 	rep_list_init( &png.rlist );
 
 	/* Create threads for propagation, 
-	 * stabilization and conflict resolution 
+	 * and receving  
 	 */
 	pthread_create( &p_thread, NULL, prop_thread, &png );
-
+	pthread_create( &r_thread, NULL, receiver_thread, &png );
 
 	png_handle_args( &png, argc, argv );
 
@@ -64,6 +66,7 @@ int main( int argc, char **argv )
 	{
 		/* Create a TCP server socket */
 		lsock = net_create_tcp_server( png.lport );
+		png.lsock = lsock;
 	}
 	else
 	{
@@ -222,6 +225,7 @@ png_handle_args(png_t *png, int argc, char **argv )
 	
 	png->lport = -1;
 	png->id = -1;
+	png->lsock = -1;
 
 	while( ( arg = getopt( argc, argv, "c:l:r:") ) != -1 )
 	{

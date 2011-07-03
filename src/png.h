@@ -24,6 +24,8 @@ typedef struct
 	 */
 	int id;
 
+	/* ID for the listen socket */
+	int lsock;
 } png_t;
 
 
