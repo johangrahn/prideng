@@ -1,6 +1,7 @@
 #include "prop.h"
 #include "png.h"
 #include "network.h"
+#include "pack.h"
 
 #include <stdio.h>
 #include <pthread.h>
@@ -16,7 +17,7 @@ prop_thread( void* data )
 	int start_gen, start_pos, end_gen;
 	int				prop_fail;
 	rep_list_t		*rlist;
-
+	pack_t			*p_pack;
 	prop_sig 		= ((png_t*)data)->prop_sig;
 	prop_sig_lock 	= ((png_t*)data)->prop_sig_lock;
 	cs 				= ((png_t*)data)->cs;
@@ -72,6 +73,9 @@ prop_thread( void* data )
 				int it;
 				int rep_sock;
 				rep_t *rep;
+				
+				/* Create a propagation package to send */
+				p_pack = pack_create_prop(1);
 
 				for( it = 0; it < rlist->size; it++ )
 				{
