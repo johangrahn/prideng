@@ -98,7 +98,7 @@ receiver_thread( void *data )
 						printf( "[Receiver Thread] %d bytes received\n", bytes );
 						
 						/* Integrate the package into the conflict set */
-						receiver_process_pack( buffer, bytes );
+						receiver_process_pack( buffer, bytes, png );
 					}
 					else if( bytes == 0 )
 					{
@@ -163,10 +163,11 @@ receiver_get_package( int socket, char *buffer )
 }
 
 void
-receiver_process_pack( char *data, size_t size )
+receiver_process_pack( char *data, size_t size, png_t *png )
 {
-	pack_t *pack;
-	ppack_t *prop_pack;
+	pack_t 		*pack;
+	ppack_t 	*prop_pack;
+	cs_t 		*cs;
 
 	if( size < sizeof( pack_t ) )
 	{
@@ -184,6 +185,12 @@ receiver_process_pack( char *data, size_t size )
 		case PROPAGATION:
 			printf( "[Recevier Thread] Detected a propagation package\n" );	
 			prop_pack = (ppack_t*) data; 
+			
+			/* Fetch conflict set that is affected */
+			cs = png->cs;
+			
+			cs_insert_remote( cs, prop_pack->updates[0], prop_pack->rep_id );
+
 		break;
 	}
 }

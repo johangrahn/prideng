@@ -8,6 +8,16 @@
 int 
 cs_inc_pos( int gen_pos, int cs_size );
 
+/* 
+ * Creates a new generation at the top
+ */
+gen_t *
+cs_create_gen( cs_t *cs );
+
+/* Returns the position in the array where the given generation exists */
+int 
+cs_get_pos( cs_t *cs, int gen );
+
 cs_t *
 cs_new( int gen_size, int replicas ) 
 {
@@ -43,28 +53,70 @@ cs_insert( cs_t *cs, int up )
 	{
 		return -1;
 	}
-	/* Increase generation pointer to point to 
-	 * the new generation 
-	 */
-	cs->max_pos = cs_inc_pos( cs->max_pos, cs->num_gen );
-	cs->max_gen++;
-
-	/* Fetch the current generation */
-	g = cs->gens[ cs->max_pos ];
-
-	/* Remove old data from the generation */
-	gen_reset( g );
+	g = cs_create_gen( cs );
 
 	g->data->data = up;
 	g->data->type = UPDATE;
 
-	/* Associate the generation number to the generation */
-	g->num = cs->max_gen;
 
 	printf( "Inserted %d into generation %d\n", up, cs->max_gen );
 	return 1;
 
 }
+
+int 
+cs_insert_remote( cs_t *cs, int up, int rep_id )
+{
+	int 	gen_num, 
+			g_pos;
+	gen_t 	*g;
+
+	/* Static number for the generation update */
+	gen_num = 0;
+
+	if( cs_is_empty( cs ) )
+	{
+		printf( "Conflict set is empty, creating new data\n" );
+		
+		/* Create generation until the proper generation for the remote update
+		 * have been created and inserted */
+		while( 1 )
+		{
+			g = cs_create_gen( cs );
+		
+			/* Check that we are at the generation that is retreived */
+			if( g->num == gen_num )
+			{	
+				g->data->data = up;
+				g->data->type = UPDATE;
+				
+				/* No need to create any more generations */
+				break;
+			}
+
+			g->data->type = NO_UP;
+			
+		}
+	}
+	else
+	{
+		printf( "Conflict set not empty, inserting data...\n" );
+
+		/* Find the generation position where the update is going to be stored
+		 * into */
+		g_pos = cs_get_pos( cs, gen_num );
+		if( g_pos == -1 )
+		{
+			printf( "Failed to find the position for generation %d in cs_insert_remote()", gen_num );
+		}
+		
+		g = cs->gens[g_pos];
+
+		printf( "Inserting data into generation %d\n", g->num );	
+	}
+
+}
+
 
 int
 cs_is_empty( cs_t *cs )
@@ -200,3 +252,41 @@ cs_inc_pos( int gen_pos, int cs_size )
 	return ( gen_pos + 1 ) % cs_size;
 }
 
+gen_t *
+cs_create_gen( cs_t *cs )
+{
+	/* Check if there is any generations previously created */
+	if( cs->max_pos == -1 )
+	{
+		cs->max_pos = 0;
+		cs->min_pos = 0;
+		cs->max_gen = 0;
+		cs->min_gen = 0;
+	}
+	else
+	{
+		/* Just create a new position at the highest generation */
+		cs->max_pos = cs_inc_pos( cs->max_pos, cs->num_gen ); 	
+		cs->max_gen++;
+	}
+
+	gen_reset( cs->gens[cs->max_pos] );
+	cs->gens[cs->max_pos]->num = cs->max_gen;
+
+
+	return cs->gens[cs->max_pos];
+}
+
+int 
+cs_get_pos( cs_t *cs, int gen )
+{
+	/* Check if the generation exists in the array */
+	if( gen < cs->min_gen || gen > cs->max_gen )
+	{
+		return -1;
+	}
+	
+	/* increase the pos with the difference between the min and current
+	 * generation */
+	return (cs->min_pos + gen - cs->min_gen) % cs->num_gen;
+}

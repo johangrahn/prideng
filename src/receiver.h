@@ -2,7 +2,7 @@
 #define __RECEIVER_H_
 
 #include <stdlib.h>
-
+#include "png.h"
 /* 
  * Main receiver thread that receives data from the 
  * other replicas 
@@ -21,7 +21,7 @@ receiver_get_package( int socket, char *buffer );
 
 /* Takes the package and processes it into the conflict set */
 void
-receiver_process_pack( char *data, size_t size );
+receiver_process_pack( char *data, size_t size, png_t *png );
 
 #endif 
 

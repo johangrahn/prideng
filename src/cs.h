@@ -27,6 +27,10 @@ cs_new( int gen_size, int replicas );
 int 
 cs_insert( cs_t *cs, int up );
 
+/* Stores the propagated update from another replica into the conflict set */
+int 
+cs_insert_remote(cs_t *cs, int up, int rep_id );
+
 /* 
  * Returns 1 if the conflict set is empty
  */
