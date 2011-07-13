@@ -76,6 +76,9 @@ prop_thread( void* data )
 				
 				/* Create a propagation package to send */
 				p_pack = pack_create_prop(1);
+				p_pack->rep_id = 1;
+				p_pack->num_up = 1;
+				p_pack->updates[0] = 1;
 
 				for( it = 0; it < rlist->size; it++ )
 				{
@@ -105,7 +108,15 @@ prop_thread( void* data )
 							rep->sock = rep_sock;
 						}
 					}
+
+
+					/* Send the data to the replica */
+					net_send_pack( rep->sock, p_pack );
+
 				}
+
+				/* Remove the allocated package */
+				free( p_pack );
 			}
 			
 			/* Failure in propagation, need to abort */

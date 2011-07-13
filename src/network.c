@@ -138,3 +138,34 @@ net_create_tcp_server( int port )
 
 	return listenSocket;
 }
+
+int
+net_send_pack( int socket, pack_t *p_pack )
+{
+	int sent,
+		left, 
+		total_sent,
+		plen;
+
+	total_sent = 0;
+	plen = p_pack->size;
+	left = plen;
+	
+	/* Tries to send the full package to the socket. If only a part of it is
+	 * send, we send the rest until the full package have been send
+	 */
+	while( total_sent < plen )
+	{
+		sent = send( socket, p_pack + total_sent, left, 0 );
+		if( sent == -1 )
+		{
+			printf( "Failed to send %d bytes\n", left );
+			continue;
+		}
+		
+		total_sent += sent;
+		left -= sent;
+	}
+
+	return 1;
+}

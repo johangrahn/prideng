@@ -26,6 +26,9 @@ receiver_thread( void *data )
 	int i;
 	socklen_t addr_len;
 	struct sockaddr_storage their_addr;
+	
+	int 	bytes;
+	char 	buffer[2048];
 
 	png = (png_t *)data;
 	
@@ -82,9 +85,77 @@ receiver_thread( void *data )
 						*/
 					}
 				}
+				else 
+				{
+					/* This is not a new connection, 
+					 * we fetch data from it instead
+					 */
+					
+					bytes = receiver_get_package( i, buffer );
+					if( bytes > 0 )
+					{
+						/* Package have been received, do something with it */
+						printf( "[Receiver Thread] %d bytes received\n", bytes );
+					}
+					else if( bytes == 0 )
+					{
+						/* No data on the socket, remove it from the master list */
+						FD_CLR(i, &master );
+					}
+					else
+					{
+						printf( "[Receiver Thread] %s", strerror( errno ) );
+					}
+				}
 			}
 		}
 	}
 
 	return NULL;
 }
+
+int
+receiver_get_package( int socket, char *buffer )
+{
+	int len,
+		bytes, 
+		received;
+
+	/* Reads the package length from the package definition */
+	if( recv( socket, &len, sizeof(len), MSG_PEEK ) == -1 )
+	{
+		printf( "[Receiver Thread] Failed to read the length of the package\n" );
+		return -1;
+	}
+
+	/* Try to fetch the full package from the stream */
+	received = recv( socket, buffer, len, 0 );
+	if( received == -1 )
+	{
+		printf( "[Receiver Thread] Failed to read the package from the stream\n" );
+		return -1;
+	}
+
+	/* Check if the full package have been retrieved, if not, fetch the rest */
+	if( received < len )
+	{
+		while( received < len )
+		{
+			bytes = recv( socket, buffer + received, len, 0);
+			if( bytes == -1 )
+			{
+				printf( "[Receiver Thread] Failed to read a part of the package\n" );
+				return -1;
+			}
+
+			/* Increase the counter for how many bytes we have fetched from the
+			 * package 
+			 */
+			received += bytes;
+		}
+	}
+
+	/* Returns the number of bytes that we have fetched */
+	return len;
+}
+
