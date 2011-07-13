@@ -1,5 +1,5 @@
 #include "receiver.h"
-
+#include "pack.h"
 #include "png.h"
 
 #include <stdio.h>
@@ -96,6 +96,9 @@ receiver_thread( void *data )
 					{
 						/* Package have been received, do something with it */
 						printf( "[Receiver Thread] %d bytes received\n", bytes );
+						
+						/* Integrate the package into the conflict set */
+						receiver_process_pack( buffer, bytes );
 					}
 					else if( bytes == 0 )
 					{
@@ -159,3 +162,28 @@ receiver_get_package( int socket, char *buffer )
 	return len;
 }
 
+void
+receiver_process_pack( char *data, size_t size )
+{
+	pack_t *pack;
+	ppack_t *prop_pack;
+
+	if( size < sizeof( pack_t ) )
+	{
+		printf("[Receiver Thread] Package data is to smal, ignoring the package\n");
+		return;
+	}
+
+	/* Convert the data to a correct package structure so that we can detect
+	 * the package type */
+	pack = (pack_t*) data;
+
+
+	switch( pack->type )
+	{
+		case PROPAGATION:
+			printf( "[Recevier Thread] Detected a propagation package\n" );	
+			prop_pack = (ppack_t*) data; 
+		break;
+	}
+}

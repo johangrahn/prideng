@@ -10,6 +10,13 @@ typedef enum
 	PROPAGATION
 } pack_type;
 
+typedef struct
+{
+	int 		size;
+	pack_type 	type;
+
+} pack_t;
+
 typedef struct 
 {
 	int 		size;
@@ -19,13 +26,13 @@ typedef struct
 	int 		num_up;
 	int 		updates[1];
 	
-} pack_t;
+} ppack_t;
 
 /* Allocates memory for a new propagation package 
  * based on the number of updates that needs 
  * to be send 
  */
-pack_t *
+ppack_t *
 pack_create_prop(int size);
 
 #endif

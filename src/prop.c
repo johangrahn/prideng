@@ -4,6 +4,7 @@
 #include "pack.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
 
 void* 
@@ -17,7 +18,7 @@ prop_thread( void* data )
 	int start_gen, start_pos, end_gen;
 	int				prop_fail;
 	rep_list_t		*rlist;
-	pack_t			*p_pack;
+	ppack_t			*p_pack;
 	prop_sig 		= ((png_t*)data)->prop_sig;
 	prop_sig_lock 	= ((png_t*)data)->prop_sig_lock;
 	cs 				= ((png_t*)data)->cs;
@@ -111,7 +112,7 @@ prop_thread( void* data )
 
 
 					/* Send the data to the replica */
-					net_send_pack( rep->sock, p_pack );
+					net_send_pack( rep->sock, (pack_t*)p_pack );
 
 				}
 

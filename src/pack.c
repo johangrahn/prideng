@@ -2,14 +2,14 @@
 
 #include <stdlib.h>
 
-pack_t *
+ppack_t *
 pack_create_prop( int size )
 {
-	pack_t *p;
+	ppack_t *p;
 
-	p = malloc( sizeof( pack_t ) + sizeof(int) * (size - 1 ) );
+	p = malloc( sizeof( ppack_t ) + sizeof(int) * (size - 1 ) );
 
-	p->size = sizeof( pack_t ) + sizeof(int) * (size - 1 );
+	p->size = sizeof( ppack_t ) + sizeof(int) * (size - 1 );
 	p->type = PROPAGATION;
 
 	return p;

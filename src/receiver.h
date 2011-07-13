@@ -1,6 +1,7 @@
 #ifndef __RECEIVER_H_
 #define __RECEIVER_H_
 
+#include <stdlib.h>
 
 /* 
  * Main receiver thread that receives data from the 
@@ -17,6 +18,10 @@ receiver_thread( void *data );
  */
 int
 receiver_get_package( int socket, char *buffer );
+
+/* Takes the package and processes it into the conflict set */
+void
+receiver_process_pack( char *data, size_t size );
 
 #endif 
 
