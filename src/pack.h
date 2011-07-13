@@ -1,6 +1,7 @@
 #ifndef __PACK_H_
 #define __PACK_H_
 
+#include "mc.h"
 /*
  * Represents the different types of packages that can be 
  * send to a replica 
@@ -24,7 +25,7 @@ typedef struct
 	
 	int 		rep_id;
 	int 		num_up;
-	int 		updates[1];
+	mc_t 		updates[1];
 	
 } ppack_t;
 

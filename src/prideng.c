@@ -137,7 +137,10 @@ int png_handle_cmd( png_t *png,  char *cmd )
 
 		for( it = 0; it < num_updates; it++ )
 		{
-			if( cs_insert( png->cs, 3 ) == -1 )
+			mc_t update;
+			strcpy(update.method_name, "metod" );
+
+			if( cs_insert( png->cs, &update ) == -1 )
 			{
 				printf( "Conflict set is full!" );
 				break;

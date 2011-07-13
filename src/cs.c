@@ -1,6 +1,7 @@
 #include "cs.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 
 /* Increases the position of the generation pointer 
@@ -45,7 +46,7 @@ cs_new( int gen_size, int replicas )
 }
 
 int 
-cs_insert( cs_t *cs, int up )
+cs_insert( cs_t *cs, mc_t *up )
 {
 	gen_t *g;
 	
@@ -53,19 +54,22 @@ cs_insert( cs_t *cs, int up )
 	{
 		return -1;
 	}
+	
 	g = cs_create_gen( cs );
 
-	g->data->data = up;
+	up->gen = g->num;
+	g->data->data = *up;
+	strncpy( g->data->data.method_name, up->method_name, MC_METHOD_SIZE );
 	g->data->type = UPDATE;
 
 
-	printf( "Inserted %d into generation %d\n", up, cs->max_gen );
+	printf( "Inserted <%s> into generation %d\n", up->method_name, up->gen );
 	return 1;
 
 }
 
 int 
-cs_insert_remote( cs_t *cs, int up, int rep_id )
+cs_insert_remote( cs_t *cs, mc_t *up, int rep_id )
 {
 	int 	gen_num, 
 			g_pos;
@@ -87,7 +91,8 @@ cs_insert_remote( cs_t *cs, int up, int rep_id )
 			/* Check that we are at the generation that is retreived */
 			if( g->num == gen_num )
 			{	
-				g->data->data = up;
+				g->data->data = *up;
+				strncpy(g->data->data.method_name, up->method_name, MC_METHOD_SIZE );
 				g->data->type = UPDATE;
 				
 				/* No need to create any more generations */
@@ -115,6 +120,7 @@ cs_insert_remote( cs_t *cs, int up, int rep_id )
 		printf( "Inserting data into generation %d\n", g->num );	
 	}
 
+	return 1;
 }
 
 
@@ -217,7 +223,7 @@ cs_show( cs_t *cs )
 			 * on the given generation */
 			for( rep_it = 0; rep_it < g->size; rep_it++ )
 			{
-				printf("%d", g->data[rep_it].data );
+				printf("%d", g->data[rep_it].data.gen );
 				
 				if( rep_it != (g->size - 1 ) )
 				{

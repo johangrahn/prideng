@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <string.h>
 
 void* 
 prop_thread( void* data )
@@ -14,6 +15,7 @@ prop_thread( void* data )
 	pthread_mutex_t *prop_sig_lock;
 	cs_t 			*cs;
 	gen_t 			*g;
+	png_t 			*png;
 	int 			it;
 	int start_gen, start_pos, end_gen;
 	int				prop_fail;
@@ -23,8 +25,10 @@ prop_thread( void* data )
 	prop_sig_lock 	= ((png_t*)data)->prop_sig_lock;
 	cs 				= ((png_t*)data)->cs;
 	rlist 			= &((png_t*)data)->rlist;
+		
 	
-	
+	png = (png_t*) data;
+
 	printf( "[Prop Thread] Thread started\n" );
 
 	while( 1 )
@@ -69,7 +73,7 @@ prop_thread( void* data )
 			/* Check if it needs to be propagated 
 			 * TODO: Add correct checkup 
 			*/
-			if( g->data->data != -1 )
+			if( g->data->type != NONE )
 			{
 				int it;
 				int rep_sock;
@@ -77,9 +81,10 @@ prop_thread( void* data )
 				
 				/* Create a propagation package to send */
 				p_pack = pack_create_prop(1);
-				p_pack->rep_id = 1;
+				p_pack->rep_id = png->id;
 				p_pack->num_up = 1;
-				p_pack->updates[0] = 1;
+				p_pack->updates[0].gen = g->data->data.gen;
+				strncpy( p_pack->updates[0].method_name, g->data->data.method_name, MC_METHOD_SIZE );
 
 				for( it = 0; it < rlist->size; it++ )
 				{
@@ -118,6 +123,10 @@ prop_thread( void* data )
 
 				/* Remove the allocated package */
 				free( p_pack );
+			}
+			else
+			{
+				printf( "Failed to propagate: NONE\n");
 			}
 			
 			/* Failure in propagation, need to abort */

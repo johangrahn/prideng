@@ -183,13 +183,13 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 	switch( pack->type )
 	{
 		case PROPAGATION:
-			printf( "[Recevier Thread] Detected a propagation package\n" );	
 			prop_pack = (ppack_t*) data; 
+			printf( "[Recevier Thread] Detected a propagation package from replica %d\n", prop_pack->rep_id );	
 			
 			/* Fetch conflict set that is affected */
 			cs = png->cs;
 			
-			cs_insert_remote( cs, prop_pack->updates[0], prop_pack->rep_id );
+			cs_insert_remote( cs, &prop_pack->updates[0], prop_pack->rep_id );
 
 		break;
 	}

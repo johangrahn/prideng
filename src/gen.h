@@ -1,6 +1,8 @@
 #ifndef __GEN_H_
 #define __GEN_H_
 
+#include "mc.h"
+
 /* Enum that represents different type of 
  * update in a generation 
  */ 
@@ -14,7 +16,7 @@ typedef enum
 /* Structure for storing data about an update */
 typedef struct
 {
-	int data;
+	mc_t data;
 	gen_update_t type;
 } gen_data_t;
 

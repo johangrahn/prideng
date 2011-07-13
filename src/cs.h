@@ -2,6 +2,7 @@
 #define __CS_H_
 
 #include "gen.h"
+#include "mc.h"
 
 typedef struct c 
 {
@@ -25,11 +26,11 @@ cs_new( int gen_size, int replicas );
  * If there are no room in the conflict set, -1 is returned 
  */
 int 
-cs_insert( cs_t *cs, int up );
+cs_insert( cs_t *cs, mc_t *up );
 
 /* Stores the propagated update from another replica into the conflict set */
 int 
-cs_insert_remote(cs_t *cs, int up, int rep_id );
+cs_insert_remote(cs_t *cs, mc_t *up, int rep_id );
 
 /* 
  * Returns 1 if the conflict set is empty
