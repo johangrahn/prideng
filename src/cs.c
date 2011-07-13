@@ -46,7 +46,7 @@ cs_new( int gen_size, int replicas )
 }
 
 int 
-cs_insert( cs_t *cs, mc_t *up )
+cs_insert( cs_t *cs, mc_t *up, int rep_id )
 {
 	gen_t *g;
 	
@@ -58,7 +58,7 @@ cs_insert( cs_t *cs, mc_t *up )
 	g = cs_create_gen( cs );
 
 	up->gen = g->num;
-	g->data->data = *up;
+	g->data[rep_id].data = *up;
 	strncpy( g->data->data.method_name, up->method_name, MC_METHOD_SIZE );
 	g->data->type = UPDATE;
 
@@ -69,16 +69,12 @@ cs_insert( cs_t *cs, mc_t *up )
 }
 
 int 
-cs_insert_remote( cs_t *cs, mc_t *up, int rep_id )
+cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 {
-	int 	gen_num, 
-			g_pos;
+	int 	g_pos;
 	gen_t 	*g;
 
-	/* Static number for the generation update */
-	gen_num = 0;
-
-	if( cs_is_empty( cs ) )
+	if( cs_is_empty( cs ) || up->gen > cs->max_gen )
 	{
 		printf( "Conflict set is empty, creating new data\n" );
 		
@@ -89,19 +85,27 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id )
 			g = cs_create_gen( cs );
 		
 			/* Check that we are at the generation that is retreived */
-			if( g->num == gen_num )
+			if( g->num == up->gen )
 			{	
-				g->data->data = *up;
-				strncpy(g->data->data.method_name, up->method_name, MC_METHOD_SIZE );
-				g->data->type = UPDATE;
+				g->data[rep_id].data = *up;
+				strncpy(g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
+				g->data[rep_id].type = UPDATE;
 				
+				g->data[own_id].type = NO_UP;
+
 				/* No need to create any more generations */
 				break;
 			}
+			else
+			{
+				g->data[rep_id].type = NO_UP;
+				g->data[own_id].type = NO_UP;
+			}
 
-			g->data->type = NO_UP;
 			
 		}
+		
+		printf( "Inserting data into generation %d\n", g->num );	
 	}
 	else
 	{
@@ -109,12 +113,13 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id )
 
 		/* Find the generation position where the update is going to be stored
 		 * into */
-		g_pos = cs_get_pos( cs, gen_num );
+		g_pos = cs_get_pos( cs, up->gen  );
 		if( g_pos == -1 )
 		{
-			printf( "Failed to find the position for generation %d in cs_insert_remote()", gen_num );
+			printf( "Failed to find the position for generation %d in cs_insert_remote()", up->gen );
 		}
 		
+		printf( "Found position: %d", g_pos );	
 		g = cs->gens[g_pos];
 
 		printf( "Inserting data into generation %d\n", g->num );	

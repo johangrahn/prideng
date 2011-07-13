@@ -26,11 +26,11 @@ cs_new( int gen_size, int replicas );
  * If there are no room in the conflict set, -1 is returned 
  */
 int 
-cs_insert( cs_t *cs, mc_t *up );
+cs_insert( cs_t *cs, mc_t *up, int rep_id );
 
 /* Stores the propagated update from another replica into the conflict set */
 int 
-cs_insert_remote(cs_t *cs, mc_t *up, int rep_id );
+cs_insert_remote(cs_t *cs, mc_t *up, int rep_id, int own_id);
 
 /* 
  * Returns 1 if the conflict set is empty

@@ -43,7 +43,7 @@ int main( int argc, char **argv )
 	/* Create confligt set that will be used in
 	 * the application 
 	 */
-	png.cs = cs_new( 10, 1 );
+	png.cs = cs_new( 10, 2 );
 	png.prop_sig = &prop_signal;
 	png.prop_sig_lock = &prop_sig_lock;
 	rep_list_init( &png.rlist );
@@ -140,7 +140,7 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			mc_t update;
 			strcpy(update.method_name, "metod" );
 
-			if( cs_insert( png->cs, &update ) == -1 )
+			if( cs_insert( png->cs, &update, png->id ) == -1 )
 			{
 				printf( "Conflict set is full!" );
 				break;

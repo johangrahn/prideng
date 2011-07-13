@@ -60,85 +60,81 @@ prop_thread( void* data )
 			start_pos = cs->prop_pos + 1;
 		}
 		
-	
 		/* Fetch the newest generaton that have been inserted */
 		end_gen = cs->max_gen;
+	
+		/* Create a propagation package to send */
+		p_pack = pack_create_prop( end_gen - start_gen + 1 );
+		p_pack->rep_id = png->id;
+		p_pack->num_up = end_gen - start_gen + 1;
 		
-		prop_fail = 0;
-		for( it = start_gen; it <= end_gen; it++ )
+		int i;
+		i = 0;
+		for( it = start_gen; it <= end_gen; it++)
 		{
 			/* Fetch the generation */
 			g = cs->gens[ it ];
 		
+			
 			/* Check if it needs to be propagated 
 			 * TODO: Add correct checkup 
 			*/
-			if( g->data->type != NONE )
+			if( g->data->type != NONE || g->data->type != NO_UP )
 			{
-				int it;
-				int rep_sock;
-				rep_t *rep;
-				
-				/* Create a propagation package to send */
-				p_pack = pack_create_prop(1);
-				p_pack->rep_id = png->id;
-				p_pack->num_up = 1;
-				p_pack->updates[0].gen = g->data->data.gen;
-				strncpy( p_pack->updates[0].method_name, g->data->data.method_name, MC_METHOD_SIZE );
-
-				for( it = 0; it < rlist->size; it++ )
-				{
-					rep = &rlist->reps[it];
-
-					printf( "[Prop Thread] Propagating generation %d to %s:%d\n",
-						g->num,
-						rlist->reps[it].host, 
-						rlist->reps[it].port );
-
-					/* Check if a connection already exists */
-					if( rep->sock == -1 )
-					{
-
-						
-						/* Connect to the replica */
-						rep_sock = net_create_tcp_socket( rep->host, rep->port );
-					
-						if(	rep_sock == -1 )
-						{
-							printf( "Failed to connect to replica on %s:%d\n", rep->host, rep->port );
-							prop_fail = 1;
-							break;
-						}
-						else
-						{
-							rep->sock = rep_sock;
-						}
-					}
-
-
-					/* Send the data to the replica */
-					net_send_pack( rep->sock, (pack_t*)p_pack );
-
-				}
-
-				/* Remove the allocated package */
-				free( p_pack );
-			}
-			else
-			{
-				printf( "Failed to propagate: NONE\n");
+				p_pack->updates[i].gen = g->data->data.gen;
+				strncpy( p_pack->updates[i].method_name, g->data->data.method_name, MC_METHOD_SIZE );
+				i++;			
 			}
 			
-			/* Failure in propagation, need to abort */
-			if( prop_fail != 0 )
-			{
-				break;
-			}
 
 			/* TODO: Increase with modulus function */
 			start_pos++;
 		}
+
+		/* Correct the number of updates that are valid */
+		p_pack->num_up = i;
 		
+		prop_fail = 0;
+		
+		for( it = 0; it < rlist->size; it++ )
+		{
+			rep_t *rep;
+			int rep_sock;
+			rep = &rlist->reps[it];
+
+			printf( "[Prop Thread] Propagating generations to %s:%d\n",
+					rlist->reps[it].host, 
+					rlist->reps[it].port );
+
+			/* Check if a connection already exists */
+			if( rep->sock == -1 )
+			{
+
+
+				/* Connect to the replica */
+				rep_sock = net_create_tcp_socket( rep->host, rep->port );
+
+				if(	rep_sock == -1 )
+				{
+					printf( "Failed to connect to replica on %s:%d\n", rep->host, rep->port );
+					prop_fail = 1;
+					break;
+				}
+				else
+				{
+					rep->sock = rep_sock;
+				}
+			}
+
+
+			/* Send the data to the replica */
+			net_send_pack( rep->sock, (pack_t*)p_pack );
+
+		}
+
+		/* Remove the allocated package */
+		free( p_pack );
+	
 		cs->prop_gen = end_gen;
 		cs->prop_pos = start_pos;
 		
