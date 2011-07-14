@@ -25,6 +25,7 @@ gen_reset( gen_t *g )
 	for( i = 0; i < g->size; i++ )
 	{
 		g->data[i].type = NONE;
+		g->data[i].data.method_name[0] = '\0';
 	}
 }
 

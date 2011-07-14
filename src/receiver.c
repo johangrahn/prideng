@@ -186,6 +186,9 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 	 * the package type */
 	pack = (pack_t*) data;
 
+	/* Fetch conflict set that is affected */
+	cs = png->cs;
+			
 
 	switch( pack->type )
 	{
@@ -193,10 +196,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 			prop_pack = (ppack_t*) data; 
 			printf( "[Recevier Thread] Detected a propagation package from replica %d with %d updates \n", prop_pack->rep_id, prop_pack->num_up );	
 			
-			/* Fetch conflict set that is affected */
-			cs = png->cs;
-			
-			
+						
 			for( it = 0; it < prop_pack->num_up; it++ )
 			{
 				/* If the insert adds generations, we need to send
@@ -204,7 +204,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 				 */
 				if( cs_insert_remote( cs, &prop_pack->updates[it], prop_pack->rep_id, png->id ) )
 				{
-					receiver_send_stab( prop_pack->rep_id, prop_pack->updates[it].gen, png );
+					receiver_send_stab( png->id, prop_pack->updates[it].gen, png );
 				}
 			}
 			
@@ -212,9 +212,10 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 
 		case STABILIZATION:
 			spack = (spack_t*) data;
-
-			printf("[Receiver Thread] Detected a stabilization package from replica %d on generation %d\n", 
-				spack->rep_id, spack->gen );	
+			
+			printf( "[Receiver Thread] Detected a stabilization package from replica %d on generation %d\n", spack->rep_id, spack->gen );	
+		
+			cs_set_stab( cs, spack->rep_id, spack->gen );	
 		break;
 	}
 }

@@ -2,6 +2,7 @@
 #include "png.h"
 #include "network.h"
 #include "pack.h"
+#include "cs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +18,7 @@ prop_thread( void* data )
 	gen_t 			*g;
 	png_t 			*png;
 	int 			it;
-	int start_gen, start_pos, end_gen;
+	int start_gen, start_pos, end_gen, end_pos;
 	int				prop_fail;
 	rep_list_t		*rlist;
 	ppack_t			*p_pack;
@@ -62,6 +63,7 @@ prop_thread( void* data )
 		
 		/* Fetch the newest generaton that have been inserted */
 		end_gen = cs->max_gen;
+		end_pos = cs->max_pos;
 	
 		/* Create a propagation package to send */
 		p_pack = pack_create_prop( end_gen - start_gen + 1 );
@@ -70,27 +72,32 @@ prop_thread( void* data )
 		
 		int i;
 		i = 0;
-		for( it = start_gen; it <= end_gen; it++)
+
+		/* Fetches each generation that needs to be propagated. It check if the
+		 * generation has the UPDATE status, otherwise it should not be
+		 * propagated
+		 */
+		for( it = start_pos; 
+				it <= end_pos; 
+				it = cs_inc_pos( it, cs->num_gen ) )
 		{
 			/* Fetch the generation */
 			g = cs->gens[ it ];
 		
-			
-			/* Check if it needs to be propagated 
-			 * TODO: Add correct checkup 
-			*/
-			if( g->data->type != NONE || g->data->type != NO_UP )
+			/* Check if it needs to be propagated */
+			if( g->data[png->id].type != NONE && g->data[png->id].type != NO_UP )
 			{
-				p_pack->updates[i].gen = g->data->data.gen;
-				strncpy( p_pack->updates[i].method_name, g->data->data.method_name, MC_METHOD_SIZE );
+				p_pack->updates[i].gen = g->data[png->id].data.gen;
+				strncpy( p_pack->updates[i].method_name, g->data[png->id].data.method_name, MC_METHOD_SIZE );
 				i++;			
 			}
 			
 
-			/* TODO: Increase with modulus function */
-			start_pos++;
 		}
 
+		cs->prop_gen = end_gen;
+		cs->prop_pos = it;
+		
 		/* Correct the number of updates that are valid */
 		p_pack->num_up = i;
 		
@@ -116,8 +123,6 @@ prop_thread( void* data )
 		/* Remove the allocated package */
 		free( p_pack );
 	
-		cs->prop_gen = end_gen;
-		cs->prop_pos = start_pos;
 		
 	}
 	

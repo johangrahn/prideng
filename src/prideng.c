@@ -145,6 +145,9 @@ int png_handle_cmd( png_t *png,  char *cmd )
 
 	curr_cmd = strtok( cmd, " " );
 		
+	if( curr_cmd == NULL )
+		return 1;
+
 	/* Check what command that was issued */
 	if( strcmp( curr_cmd, "q" ) == 0 ) 
 	{

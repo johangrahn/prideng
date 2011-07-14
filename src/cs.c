@@ -4,11 +4,6 @@
 #include <string.h>
 
 
-/* Increases the position of the generation pointer 
- * based on its current position and cs size */
-int 
-cs_inc_pos( int gen_pos, int cs_size );
-
 /* 
  * Creates a new generation at the top
  */
@@ -127,6 +122,31 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 	return 0;
 }
 
+void
+cs_set_stab( cs_t *cs, int rep_id, int gen )
+{
+	int g_pos;
+
+	g_pos = cs_get_pos( cs, gen );
+	if( g_pos != -1 )
+	{
+		gen_t *g;
+
+		g = cs->gens[g_pos];
+		
+		/* Check if there have been any updates, if not, set to no update */
+		if( g->data[rep_id].type == NONE )
+		{
+			g->data[rep_id].type = NO_UP;
+		}
+		
+		printf( "Updated stabilization info on gen %d on replica %d\n", gen, rep_id );
+	}
+	else
+	{
+		printf( "Failed to fetch generation position for cs_set_stab() for gen %d \n", gen );
+	}
+}
 
 int
 cs_is_empty( cs_t *cs )

@@ -32,6 +32,10 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id );
 int 
 cs_insert_remote(cs_t *cs, mc_t *up, int rep_id, int own_id);
 
+/* Sets the stabilization information for a given generation and replica */
+void
+cs_set_stab( cs_t *cs, int rep_id, int gen );
+
 /* 
  * Returns 1 if the conflict set is empty
  */
@@ -58,6 +62,11 @@ cs_show( cs_t *cs );
 /* Removes the memory that have been allocated */
 void 
 cs_free( cs_t *cs );
+
+/* Increases the position of the generation pointer 
+ * based on its current position and cs size */
+int 
+cs_inc_pos( int gen_pos, int cs_size );
 
 #endif
 
