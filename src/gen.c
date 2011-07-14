@@ -24,7 +24,7 @@ gen_reset( gen_t *g )
 
 	for( i = 0; i < g->size; i++ )
 	{
-		g->data->type = NONE;
+		g->data[i].type = NONE;
 	}
 }
 

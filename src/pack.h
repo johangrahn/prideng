@@ -8,7 +8,8 @@
  */
 typedef enum 
 {
-	PROPAGATION
+	PROPAGATION, 
+	STABILIZATION
 } pack_type;
 
 typedef struct
@@ -28,6 +29,14 @@ typedef struct
 	mc_t 		updates[1];
 	
 } ppack_t;
+
+typedef struct 
+{
+	int 		size;
+	pack_type 	type;
+	int 		rep_id; 
+	int 		gen;
+} spack_t;
 
 /* Allocates memory for a new propagation package 
  * based on the number of updates that needs 

@@ -19,6 +19,7 @@ cs_create_gen( cs_t *cs );
 int 
 cs_get_pos( cs_t *cs, int gen );
 
+
 cs_t *
 cs_new( int gen_size, int replicas ) 
 {
@@ -59,8 +60,8 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id )
 
 	up->gen = g->num;
 	g->data[rep_id].data = *up;
-	strncpy( g->data->data.method_name, up->method_name, MC_METHOD_SIZE );
-	g->data->type = UPDATE;
+	strncpy( g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
+	g->data[rep_id].type = UPDATE;
 
 
 	printf( "Inserted <%s> into generation %d\n", up->method_name, up->gen );
@@ -76,8 +77,6 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 
 	if( cs_is_empty( cs ) || up->gen > cs->max_gen )
 	{
-		printf( "Conflict set is empty, creating new data\n" );
-		
 		/* Create generation until the proper generation for the remote update
 		 * have been created and inserted */
 		while( 1 )
@@ -101,11 +100,11 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 				g->data[rep_id].type = NO_UP;
 				g->data[own_id].type = NO_UP;
 			}
-
-			
 		}
 		
 		printf( "Inserting data into generation %d\n", g->num );	
+
+		return 1;
 	}
 	else
 	{
@@ -125,7 +124,7 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 		printf( "Inserting data into generation %d\n", g->num );	
 	}
 
-	return 1;
+	return 0;
 }
 
 
@@ -219,7 +218,7 @@ cs_show( cs_t *cs )
 		printf( "Propagated: %d\n", cs->prop_gen );
 		
 		/* Iterate trough each generation */
-		for( g_it = cs->min_gen; g_it < cs->max_gen; g_it++, g_pos++ )
+		for( g_it = cs->min_gen; g_it <= cs->max_gen; g_it++, g_pos++ )
 		{
 			g = cs->gens[ g_pos ];
 			printf("%d:[ ", g->num );
@@ -228,7 +227,19 @@ cs_show( cs_t *cs )
 			 * on the given generation */
 			for( rep_it = 0; rep_it < g->size; rep_it++ )
 			{
-				printf("%d", g->data[rep_it].data.gen );
+				switch( g->data[rep_it].type )
+				{
+					case UPDATE:
+						printf(" U");
+					break;
+					case NO_UP:
+						printf(" O");
+					break;
+
+					case NONE:
+						printf(" N");
+					break;
+				}
 				
 				if( rep_it != (g->size - 1 ) )
 				{

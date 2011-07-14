@@ -106,26 +106,7 @@ prop_thread( void* data )
 					rlist->reps[it].host, 
 					rlist->reps[it].port );
 
-			/* Check if a connection already exists */
-			if( rep->sock == -1 )
-			{
-
-
-				/* Connect to the replica */
-				rep_sock = net_create_tcp_socket( rep->host, rep->port );
-
-				if(	rep_sock == -1 )
-				{
-					printf( "Failed to connect to replica on %s:%d\n", rep->host, rep->port );
-					prop_fail = 1;
-					break;
-				}
-				else
-				{
-					rep->sock = rep_sock;
-				}
-			}
-
+		
 
 			/* Send the data to the replica */
 			net_send_pack( rep->sock, (pack_t*)p_pack );

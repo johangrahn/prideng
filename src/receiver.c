@@ -1,6 +1,7 @@
 #include "receiver.h"
 #include "pack.h"
 #include "png.h"
+#include "network.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -15,6 +16,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <fcntl.h>
+
+/* Sends stabilization message to the other replicas */
+int
+receiver_send_stab(int rep_id, int gen, png_t *png );
 
 void *
 receiver_thread( void *data )
@@ -167,6 +172,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 {
 	pack_t 		*pack;
 	ppack_t 	*prop_pack;
+	spack_t		*spack;
 	cs_t 		*cs;
 	int			it;
 
@@ -190,10 +196,56 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 			/* Fetch conflict set that is affected */
 			cs = png->cs;
 			
+			
 			for( it = 0; it < prop_pack->num_up; it++ )
 			{
-				cs_insert_remote( cs, &prop_pack->updates[it], prop_pack->rep_id, png->id );
+				/* If the insert adds generations, we need to send
+				 * stabilization messages to the other replicas 
+				 */
+				if( cs_insert_remote( cs, &prop_pack->updates[it], prop_pack->rep_id, png->id ) )
+				{
+					receiver_send_stab( prop_pack->rep_id, prop_pack->updates[it].gen, png );
+				}
 			}
+			
+		break;
+
+		case STABILIZATION:
+			spack = (spack_t*) data;
+
+			printf("[Receiver Thread] Detected a stabilization package from replica %d on generation %d\n", 
+				spack->rep_id, spack->gen );	
 		break;
 	}
+}
+
+int
+receiver_send_stab( int rep_id, int gen, png_t *png )
+{
+	int 		it;
+	spack_t 	pack;
+	rep_t 		*rep;
+	
+	pack.size = sizeof( spack_t );
+	pack.type = STABILIZATION;
+	pack.gen = gen;
+	pack.rep_id = rep_id;
+
+	for( it = 0; it < png->rlist.size; it++ )
+	{
+		rep = &png->rlist.reps[it];
+
+		printf( "[Receiver Thread] Sending stabilization message to %s:%d\n",
+				png->rlist.reps[it].host, 
+				png->rlist.reps[it].port );
+
+		
+		
+		/* Send the data to the replica */
+		net_send_pack( rep->sock, (pack_t*)&pack );
+
+	}
+
+	return 1;
+
 }

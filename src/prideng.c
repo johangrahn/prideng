@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <getopt.h>
+#include <unistd.h>
 
 
 
@@ -26,6 +27,7 @@ int main( int argc, char **argv )
 	char 		cmd[40];
 	int 		res;
 	int			lsock;
+	int 		it;
 	png_t 		png;
 	pthread_t 	p_thread,
 				r_thread;
@@ -74,7 +76,32 @@ int main( int argc, char **argv )
 	pthread_create( &p_thread, NULL, prop_thread, &png );
 	pthread_create( &r_thread, NULL, receiver_thread, &png );
 
-	
+	for( it = 0; it < png.rlist.size; it++ )
+	{
+		int rep_sock;
+		rep_t *rep;
+
+		rep = &png.rlist.reps[it];
+		while( 1 )
+		{
+			/* Connect to the replica */
+			rep_sock = net_create_tcp_socket( rep->host, rep->port );
+
+			if(	rep_sock == -1 )
+			{
+				printf( "Failed to connect to replica on %s:%d\n", rep->host, rep->port );
+				sleep( 1 );
+
+			}
+			else
+			{
+				rep->sock = rep_sock;
+				break;
+			}
+		}
+	}
+		
+
 	/* Start taking in user commands */
 	while( 1 )
 	{
@@ -185,12 +212,13 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		 */
 		rep.sock = -1;
 	
-
+		
 		/* Add the replica to the replica list */
 		rep_list_add( &png->rlist, &rep );
 		
 		printf( "Replica %d:%s:%d was added\n", rep.id, rep.host, rep.port );
-		
+
+	
 		return 1;
 	}
 	
