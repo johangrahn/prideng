@@ -79,22 +79,29 @@ prop_thread( void* data )
 		 * generation has the UPDATE status, otherwise it should not be
 		 * propagated
 		 */
+		
+		printf( "start_pos: %d\n", start_pos );
+		printf( "end_pos: %d\n", end_pos );
 		for( it = start_pos; 
-				it != end_pos; 
+				it <= end_pos; 
 				it = cs_inc_pos( it, cs->num_gen ) )
 		{
+			printf( "Running\n");
 			/* Fetch the generation */
 			g = cs->gens[ it ];
 			
 			/* Check if it needs to be propagated */
-			if( g->data[png->id].type != GEN_NONE && g->data[png->id].type != GEN_NO_UP )
+			if( g->data[png->id].type != GEN_NONE && 
+				g->data[png->id].type != GEN_NO_UP )
 			{
 				p_pack->updates[i].gen = g->data[png->id].data.gen;
 				strncpy( p_pack->updates[i].method_name, g->data[png->id].data.method_name, MC_METHOD_SIZE );
 				/* Increase the array pointer to the package struct only when
 				 * we find a generation that needs propagation
 				 */
-				i++;			
+				i++;
+				
+				printf( "Added update in package\n" );			
 			}
 			
 
@@ -103,8 +110,17 @@ prop_thread( void* data )
 		cs->prop_gen = end_gen;
 		cs->prop_pos = it;
 		
+		
+		if( i == 0 )
+		{
+			printf( "No generations needs to be propagated!\n" );
+			continue;
+		}
+		
 		/* Correct the number of updates that are valid */
 		p_pack->num_up = i;
+		
+		printf( "The corrected number of updates is: %d\n", i );
 		
 		prop_fail = 0;
 		
