@@ -56,7 +56,7 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id )
 	up->gen = g->num;
 	g->data[rep_id].data = *up;
 	strncpy( g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
-	g->data[rep_id].type = UPDATE;
+	g->data[rep_id].type = GEN_UPDATE;
 
 
 	printf( "Inserted <%s> into generation %d\n", up->method_name, up->gen );
@@ -83,17 +83,17 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 			{	
 				g->data[rep_id].data = *up;
 				strncpy(g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
-				g->data[rep_id].type = UPDATE;
+				g->data[rep_id].type = GEN_UPDATE;
 				
-				g->data[own_id].type = NO_UP;
+				g->data[own_id].type = GEN_NO_UP;
 
 				/* No need to create any more generations */
 				break;
 			}
 			else
 			{
-				g->data[rep_id].type = NO_UP;
-				g->data[own_id].type = NO_UP;
+				g->data[rep_id].type = GEN_NO_UP;
+				g->data[own_id].type = GEN_NO_UP;
 			}
 		}
 		
@@ -135,9 +135,9 @@ cs_set_stab( cs_t *cs, int rep_id, int gen )
 		g = cs->gens[g_pos];
 		
 		/* Check if there have been any updates, if not, set to no update */
-		if( g->data[rep_id].type == NONE )
+		if( g->data[rep_id].type == GEN_NONE )
 		{
-			g->data[rep_id].type = NO_UP;
+			g->data[rep_id].type = GEN_NO_UP;
 		}
 		
 		printf( "Updated stabilization info on gen %d on replica %d\n", gen, rep_id );
@@ -249,14 +249,14 @@ cs_show( cs_t *cs )
 			{
 				switch( g->data[rep_it].type )
 				{
-					case UPDATE:
+					case GEN_UPDATE:
 						printf(" U");
 					break;
-					case NO_UP:
+					case GEN_NO_UP:
 						printf(" O");
 					break;
 
-					case NONE:
+					case GEN_NONE:
 						printf(" N");
 					break;
 				}

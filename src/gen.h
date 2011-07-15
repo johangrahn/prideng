@@ -8,9 +8,9 @@
  */ 
 typedef enum 
 {
-	UPDATE,
-	NO_UP,
-	NONE
+	GEN_UPDATE,
+	GEN_NO_UP,
+	GEN_NONE
 } gen_update_t;
 
 /* Structure for storing data about an update */

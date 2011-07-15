@@ -17,7 +17,8 @@ prop_thread( void* data )
 	cs_t 			*cs;
 	gen_t 			*g;
 	png_t 			*png;
-	int 			it;
+	int 			it,
+					i;
 	int start_gen, start_pos, end_gen, end_pos;
 	int				prop_fail;
 	rep_list_t		*rlist;
@@ -71,7 +72,7 @@ prop_thread( void* data )
 		p_pack->num_up = end_gen - start_gen + 1;
 		
 		printf( "Creating prop package for %d updates\n", end_gen - start_gen + 1);
-		int i;
+		
 		i = 0;
 
 		/* Fetches each generation that needs to be propagated. It check if the
@@ -86,7 +87,7 @@ prop_thread( void* data )
 			g = cs->gens[ it ];
 			
 			/* Check if it needs to be propagated */
-			if( g->data[png->id].type != NONE && g->data[png->id].type != NO_UP )
+			if( g->data[png->id].type != GEN_NONE && g->data[png->id].type != GEN_NO_UP )
 			{
 				p_pack->updates[i].gen = g->data[png->id].data.gen;
 				strncpy( p_pack->updates[i].method_name, g->data[png->id].data.method_name, MC_METHOD_SIZE );
@@ -110,7 +111,6 @@ prop_thread( void* data )
 		for( it = 0; it < rlist->size; it++ )
 		{
 			rep_t *rep;
-			int rep_sock;
 			rep = &rlist->reps[it];
 
 			printf( "[Prop Thread] Propagating generations to %s:%d\n",
