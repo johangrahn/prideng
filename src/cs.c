@@ -165,7 +165,7 @@ cs_is_empty( cs_t *cs )
 int
 cs_is_full( cs_t *cs )
 {
-	if( ( cs->max_gen - cs->min_gen ) < ( cs->num_gen ) )
+	if( ( cs->max_gen - cs->min_gen + 1 ) <  cs->num_gen  )
 	{
 		return 0;
 	}
