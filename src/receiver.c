@@ -132,7 +132,7 @@ receiver_get_package( int socket, char *buffer )
 	/* Reads the package length from the package definition */
 	if( recv( socket, &len, sizeof(len), MSG_PEEK ) == -1 )
 	{
-		printf( "[Receiver Thread] Failed to read the length of the package\n" );
+		REC_PRINT( "Failed to read the length of the package\n" );
 		return -1;
 	}
 
@@ -140,7 +140,7 @@ receiver_get_package( int socket, char *buffer )
 	received = recv( socket, buffer, len, 0 );
 	if( received == -1 )
 	{
-		printf( "[Receiver Thread] Failed to read the package from the stream\n" );
+		REC_PRINT( "Failed to read the package from the stream\n" );
 		return -1;
 	}
 
@@ -152,7 +152,7 @@ receiver_get_package( int socket, char *buffer )
 			bytes = recv( socket, buffer + received, len, 0);
 			if( bytes == -1 )
 			{
-				printf( "[Receiver Thread] Failed to read a part of the package\n" );
+				REC_PRINT( "Failed to read a part of the package\n" );
 				return -1;
 			}
 
@@ -178,7 +178,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 
 	if( size < sizeof( pack_t ) )
 	{
-		printf("[Receiver Thread] Package data is to smal, ignoring the package\n");
+		REC_PRINT( "[Receiver Thread] Package data is to smal, ignoring the package\n" );
 		return;
 	}
 
@@ -194,7 +194,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 	{
 		case PROPAGATION:
 			prop_pack = (ppack_t*) data; 
-			printf( "[Recevier Thread] Detected a propagation package from replica %d with %d updates \n", prop_pack->rep_id, prop_pack->num_up );	
+			REC_PRINT( "Detected a propagation package from replica %d with %d updates \n", prop_pack->rep_id, prop_pack->num_up );	
 			
 						
 			for( it = 0; it < prop_pack->num_up; it++ )
@@ -213,7 +213,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 		case STABILIZATION:
 			spack = (spack_t*) data;
 			
-			printf( "[Receiver Thread] Detected a stabilization package from replica %d on generation %d\n", spack->rep_id, spack->gen );	
+			REC_PRINT( "Detected a stabilization package from replica %d on generation %d\n", spack->rep_id, spack->gen );	
 		
 			cs_set_stab( cs, spack->rep_id, spack->gen );	
 		break;
