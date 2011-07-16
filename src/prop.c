@@ -18,7 +18,8 @@ prop_thread( void* data )
 	gen_t 			*g;
 	png_t 			*png;
 	int 			it,
-					i;
+					i, 
+					gen_it;
 	int start_gen, start_pos, end_gen, end_pos;
 	int				prop_fail;
 	rep_list_t		*rlist;
@@ -74,13 +75,13 @@ prop_thread( void* data )
 		printf( "Creating prop package for %d updates\n", end_gen - start_gen + 1);
 		
 		i = 0;
-
+		gen_it = start_gen;
 		/* Fetches each generation that needs to be propagated. It check if the
 		 * generation has the UPDATE status, otherwise it should not be
 		 * propagated
 		 */
 		for( it = start_pos; 
-				it <= end_pos; 
+				gen_it <= end_gen; 
 				it = cs_inc_pos( it, cs->num_gen ) )
 		{
 			/* Fetch the generation */
@@ -98,6 +99,7 @@ prop_thread( void* data )
 				i++;		
 			}
 			
+			gen_it ++;
 
 		}
 
