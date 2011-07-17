@@ -28,7 +28,7 @@ int main( int argc, char **argv )
 	int 		res;
 	int			lsock;
 	int 		it;
-	png_t 		png;
+
 	pthread_t 	p_thread,
 				r_thread;
 
@@ -45,24 +45,24 @@ int main( int argc, char **argv )
 	/* Create confligt set that will be used in
 	 * the application 
 	 */
-	png.cs = cs_new( 10, 2 );
-	png.prop_sig = &prop_signal;
-	png.prop_sig_lock = &prop_sig_lock;
-	rep_list_init( &png.rlist );
+	__conf.cs = cs_new( 10, 2 );
+	__conf.prop_sig = &prop_signal;
+	__conf.prop_sig_lock = &prop_sig_lock;
+	rep_list_init( &__conf.rlist );
 
-	png_handle_args( &png, argc, argv );
+	png_handle_args( &__conf, argc, argv );
 
-	if( png.id == -1 )
+	if( __conf.id == -1 )
 	{
 		printf( "You must set a replica id!\n" );
 		exit( 1 );
 	}
 
-	if( png.lport != -1 )
+	if( __conf.lport != -1 )
 	{
 		/* Create a TCP server socket */
-		lsock = net_create_tcp_server( png.lport );
-		png.lsock = lsock;
+		lsock = net_create_tcp_server( __conf.lport );
+		__conf.lsock = lsock;
 	}
 	else
 	{
@@ -73,15 +73,15 @@ int main( int argc, char **argv )
 	/* Create threads for propagation, 
 	 * and receving  
 	 */
-	pthread_create( &p_thread, NULL, prop_thread, &png );
-	pthread_create( &r_thread, NULL, receiver_thread, &png );
+	pthread_create( &p_thread, NULL, prop_thread, &__conf );
+	pthread_create( &r_thread, NULL, receiver_thread, &__conf );
 
-	for( it = 0; it < png.rlist.size; it++ )
+	for( it = 0; it < __conf.rlist.size; it++ )
 	{
 		int rep_sock;
 		rep_t *rep;
 
-		rep = &png.rlist.reps[it];
+		rep = &__conf.rlist.reps[it];
 		while( 1 )
 		{
 			/* Connect to the replica */
@@ -112,7 +112,7 @@ int main( int argc, char **argv )
 		fgets( cmd, 40, stdin );
 		cmd[ strlen( cmd ) -1 ] = '\0';
 
-		res = png_handle_cmd( &png, cmd );
+		res = png_handle_cmd( &__conf, cmd );
 
 		/* Check if the quit command was issued */
 		if( res == 0 )
@@ -129,8 +129,8 @@ int main( int argc, char **argv )
 	pthread_cond_destroy( &prop_signal );
 	pthread_mutex_destroy( &prop_sig_lock );
 	
-	cs_free( png.cs );
-	rep_list_free( &png.rlist );
+	cs_free( __conf.cs );
+	rep_list_free( &__conf.rlist );
 	return 0;
 }
 
@@ -172,7 +172,7 @@ int png_handle_cmd( png_t *png,  char *cmd )
 
 			if( cs_insert( png->cs, &update, png->id ) == -1 )
 			{
-				printf( "Conflict set is full!" );
+				printf( "Conflict set is full!\n" );
 				break;
 			}
 		}

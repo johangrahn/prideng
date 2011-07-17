@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "png.h"
 
 /* 
  * Creates a new generation at the top
@@ -195,7 +196,10 @@ cs_pop( cs_t *cs )
 	
 	/* Check so that the generation have already been propagated, 
 	 * or it is a remote update */
-	if( g->num <= cs->prop_gen )
+	if( g->num <= cs->prop_gen || 
+		( g->data[__conf.id].type != GEN_UPDATE && 
+			g->num > cs->prop_gen 
+		) )
 	{	
 		cs->min_gen++;
 		cs->min_pos = cs_inc_pos( cs->min_pos, cs->num_gen );
@@ -207,6 +211,7 @@ cs_pop( cs_t *cs )
 	}
 	else
 	{
+		
 		printf( "Failed to stablize, generation %d is not propagated\n ", g->num );
 		
 		return NULL;
@@ -328,6 +333,7 @@ cs_get_pos( cs_t *cs, int gen )
 		return -1;
 	}
 	
+	printf( "Trying to find position for gen %d\n", gen );
 	/* increase the pos with the difference between the min and current
 	 * generation */
 	return (cs->min_pos + gen - cs->min_gen) % cs->num_gen;

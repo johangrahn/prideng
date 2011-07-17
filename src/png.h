@@ -28,6 +28,7 @@ typedef struct
 	int lsock;
 } png_t;
 
+png_t __conf;
 
 #endif
 

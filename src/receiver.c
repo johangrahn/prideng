@@ -202,6 +202,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 				/* If the insert adds generations, we need to send
 				 * stabilization messages to the other replicas 
 				 */
+				
 				if( cs_insert_remote( cs, &prop_pack->updates[it], prop_pack->rep_id, png->id ) )
 				{
 					receiver_send_stab( png->id, prop_pack->updates[it].gen, png );
