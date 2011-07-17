@@ -72,19 +72,12 @@ prop_thread( void* data )
 		p_pack->rep_id = png->id;
 		p_pack->num_up = end_gen - start_gen + 1;
 		
-		printf( "Creating prop package for %d updates\n", end_gen - start_gen + 1);
-		
 		i = 0;
 		gen_it = start_gen;
 		/* Fetches each generation that needs to be propagated. It check if the
 		 * generation has the UPDATE status, otherwise it should not be
 		 * propagated
 		 */
-		
-		printf( "Starting with it = %d\n", gen_it );
-		printf( "start_pos: %d\n", start_pos );
-		printf( "end_gen: %d\n", end_gen );
-		
 		for( it = start_pos; 
 				gen_it <= end_gen; 
 				it = cs_inc_pos( it, cs->num_gen ) )
@@ -101,7 +94,6 @@ prop_thread( void* data )
 				p_pack->updates[i].gen = g->data[png->id].data.gen;
 				strncpy( p_pack->updates[i].method_name, g->data[png->id].data.method_name, MC_METHOD_SIZE );
 				
-				printf( "Creating prop package with gen %d\n", p_pack->updates[i].gen );
 				/* Increase the array pointer to the package struct only when
 				 * we find a generation that needs propagation
 				 */
