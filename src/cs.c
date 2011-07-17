@@ -39,6 +39,11 @@ cs_new( int gen_size, int replicas )
 	}
 
 	cs->num_gen = gen_size;
+	
+	/* Init locking */
+	
+	pthread_mutex_init( &cs->max_lock, 0 );
+	
 	return cs;
 }
 
@@ -52,6 +57,9 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id )
 		return -1;
 	}
 	
+	/* Locked the max variables since the function modifies them */
+	pthread_mutex_lock( &cs->max_lock );
+	
 	g = cs_create_gen( cs );
 
 	up->gen = g->num;
@@ -59,7 +67,8 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id )
 	strncpy( g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
 	g->data[rep_id].type = GEN_UPDATE;
 
-
+	pthread_mutex_unlock( &cs->max_lock );
+	
 	printf( "Inserted <%s> into generation %d\n", up->method_name, up->gen );
 	return 1;
 
@@ -73,6 +82,9 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 
 	if( cs_is_empty( cs ) || up->gen > cs->max_gen )
 	{
+		/* Set lock since generations will be created */
+		pthread_mutex_lock( &cs->max_lock );
+		
 		/* Create generation until the proper generation for the remote update
 		 * have been created and inserted */
 		while( 1 )
@@ -97,6 +109,9 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 				g->data[own_id].type = GEN_NO_UP;
 			}
 		}
+		
+		/* Done with max vars */
+		pthread_mutex_unlock( &cs->max_lock );
 		
 		printf( "Inserting data into generation %d\n", g->num );	
 

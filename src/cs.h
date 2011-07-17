@@ -4,6 +4,7 @@
 #include "gen.h"
 #include "mc.h"
 
+#include <pthread.h>
 typedef struct c 
 {
 
@@ -14,6 +15,9 @@ typedef struct c
 	gen_t **gens;
 	
 	int num_gen;
+	
+	pthread_mutex_t max_lock;
+	
 } cs_t;
 
 /* Creates a new conflict set with a defined 
