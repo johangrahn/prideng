@@ -14,6 +14,7 @@ typedef struct
 {
 	param_type_t type;
 	
+	/* Different data containers for the data type */
 	union 
 	{
 		int int_data;

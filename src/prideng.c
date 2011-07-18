@@ -142,7 +142,8 @@ void png_show_prompt()
 int png_handle_cmd( png_t *png,  char *cmd )
 {
 	char *curr_cmd;
-
+	cs_t *cs;
+	
 	curr_cmd = strtok( cmd, " " );
 		
 	if( curr_cmd == NULL )
@@ -164,7 +165,9 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			num_updates = atoi( updates );
 		else
 			num_updates = 1;
-
+		
+		cs = cs_create_trans_obj( png->cs );
+		
 		for( it = 0; it < num_updates; it++ )
 		{
 			mc_t update;
@@ -173,11 +176,15 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			update.params[0].type 			= TYPE_INT;
 			update.params[0].data.int_data 	= 1;
 			
+			cs_lock( png->cs );
+			
 			if( cs_insert( png->cs, &update, png->id ) == -1 )
 			{
 				printf( "Conflict set is full!\n" );
 				break;
 			}
+			
+			cs_unlock( png->cs );
 		}
 		return 1;
 	}

@@ -196,7 +196,8 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 			prop_pack = (ppack_t*) data; 
 			REC_PRINT( "Detected a propagation package from replica %d with %d updates \n", prop_pack->rep_id, prop_pack->num_up );	
 			
-						
+			cs_lock( cs );	
+					
 			for( it = 0; it < prop_pack->num_up; it++ )
 			{
 				/* If the insert adds generations, we need to send
@@ -209,14 +210,17 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 				}
 			}
 			
+			cs_unlock( cs );
+			
 		break;
 
 		case STABILIZATION:
 			spack = (spack_t*) data;
 			
 			REC_PRINT( "Detected a stabilization package from replica %d on generation %d\n", spack->rep_id, spack->gen );	
-		
-			cs_set_stab( cs, spack->rep_id, spack->gen );	
+			cs_lock( cs );
+			cs_set_stab( cs, spack->rep_id, spack->gen );
+			cs_unlock( cs );	
 		break;
 	}
 }

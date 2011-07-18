@@ -16,6 +16,10 @@ int
 cs_get_pos( cs_t *cs, int gen );
 
 
+/* Creates a copy of the conflict set */
+cs_t *
+cs_copy( cs_t *cs );
+
 cs_t *
 cs_new( int gen_size, int replicas ) 
 {
@@ -42,7 +46,7 @@ cs_new( int gen_size, int replicas )
 	
 	/* Init locking */
 	
-	pthread_mutex_init( &cs->max_lock, 0 );
+	pthread_mutex_init( &cs->lock, 0 );
 	
 	return cs;
 }
@@ -57,17 +61,12 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id )
 		return -1;
 	}
 	
-	/* Locked the max variables since the function modifies them */
-	pthread_mutex_lock( &cs->max_lock );
-	
 	g = cs_create_gen( cs );
 
 	up->gen = g->num;
 	g->data[rep_id].data = *up;
 	strncpy( g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
 	g->data[rep_id].type = GEN_UPDATE;
-
-	pthread_mutex_unlock( &cs->max_lock );
 	
 	printf( "Inserted <%s> into generation %d\n", up->method_name, up->gen );
 	return 1;
@@ -82,8 +81,6 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 
 	if( cs_is_empty( cs ) || up->gen > cs->max_gen )
 	{
-		/* Set lock since generations will be created */
-		pthread_mutex_lock( &cs->max_lock );
 		
 		/* Create generation until the proper generation for the remote update
 		 * have been created and inserted */
@@ -109,9 +106,6 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 				g->data[own_id].type = GEN_NO_UP;
 			}
 		}
-		
-		/* Done with max vars */
-		pthread_mutex_unlock( &cs->max_lock );
 		
 		printf( "Inserting data into generation %d\n", g->num );	
 
@@ -231,10 +225,33 @@ cs_pop( cs_t *cs )
 		
 		return NULL;
 	}
-	
-	
-
 }
+
+
+cs_t *
+cs_create_trans_obj( cs_t *cs )
+{
+	cs_t *cs_n;
+	
+	cs_lock( cs );
+	
+	cs_n = cs_copy( cs );
+	
+	return cs_n;
+}
+
+void
+cs_lock( cs_t *cs )
+{
+	pthread_mutex_lock( &cs->lock );
+}
+
+void
+cs_unlock( cs_t *cs )
+{
+	pthread_mutex_unlock( &cs->lock );
+}
+
 
 void 
 cs_show( cs_t *cs )
@@ -352,4 +369,32 @@ cs_get_pos( cs_t *cs, int gen )
 	/* increase the pos with the difference between the min and current
 	 * generation */
 	return (cs->min_pos + gen - cs->min_gen) % cs->num_gen;
+}
+
+cs_t *
+cs_copy( cs_t *cs )
+{
+	cs_t 	*cs_n;
+	int		i, y;
+	
+ 	cs_n = malloc( sizeof( cs_t ) );
+	
+	*cs_n  = *cs;
+	
+	/* Create space for the generations */
+	cs_n->gens = malloc( sizeof( gen_t ) * cs->num_gen );
+	
+	/* Create memory for each replica in each generation */
+	for( i = 0; i < cs->num_gen; i++ )
+	{
+		cs_n->gens[i] = gen_new( cs->gens[i]->size );
+		
+		for( y = 0; y < cs->gens[i]->size; y++ )
+		{
+			cs_n->gens[i]->data[i] = cs->gens[i]->data[i];
+			strcpy(	cs_n->gens[i]->data[i].data.method_name,  cs->gens[i]->data[i].data.method_name );
+		}
+	}
+	
+	return cs_n;
 }

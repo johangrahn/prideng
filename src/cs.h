@@ -16,7 +16,8 @@ typedef struct c
 	
 	int num_gen;
 	
-	pthread_mutex_t max_lock;
+	/* Lock for accessing the structure */
+	pthread_mutex_t lock;
 	
 } cs_t;
 
@@ -59,6 +60,19 @@ cs_is_full( cs_t *cs );
 gen_t *
 cs_pop( cs_t *cs );
 
+
+/* Creates a copy of the conflict set and marks this conflict set as locked */
+cs_t *
+cs_create_trans_obj( cs_t *cs );
+
+
+/* Locks / unlocks access */
+void
+cs_lock( cs_t *cs );
+
+void
+cs_unlock( cs_t *cs );
+	
 /* Prints information about the conflict set */
 void 
 cs_show( cs_t *cs );
