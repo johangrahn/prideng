@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+#include <sys/select.h>
 /* Sends stabilization message to the other replicas */
 int
 receiver_send_stab(int rep_id, int gen, png_t *png );
