@@ -403,8 +403,9 @@ cs_copy( cs_t *cs )
 		
 		for( y = 0; y < cs->gens[i]->size; y++ )
 		{
-			cs_n->gens[i]->data[i] = cs->gens[i]->data[i];
-			strcpy(	cs_n->gens[i]->data[i].data.method_name,  cs->gens[i]->data[i].data.method_name );
+			cs_n->gens[i]->data[y] = cs->gens[i]->data[y];
+			mc_copy( &cs->gens[i]->data[y].data, &cs_n->gens[i]->data[y].data );
+
 		}
 	}
 	

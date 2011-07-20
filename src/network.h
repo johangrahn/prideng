@@ -11,7 +11,7 @@ net_create_tcp_server( int port );
 
 /* Sends the package to the specified socket */
 int
-net_send_pack( int socket, pack_t *p_pack );
+net_send_pack( int socket,  void* data, int size );
 
 #endif 
 

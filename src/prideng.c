@@ -165,9 +165,9 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			num_updates = atoi( updates );
 		else
 			num_updates = 1;
-		
+		/*	
 		cs = cs_create_trans_obj( png->cs );
-		
+		*/
 		for( it = 0; it < num_updates; it++ )
 		{
 			mc_t update;

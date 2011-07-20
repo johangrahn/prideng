@@ -10,6 +10,7 @@
 /* Different parameter types that can be used */
 typedef enum
 {
+	TYPE_NONE, 
 	TYPE_INT
 } param_type_t;
 
@@ -39,6 +40,10 @@ typedef struct
 	param_t params[MC_PARAM_MAX];
 	 
 } mc_t;
+
+/* Sets the default values for each property in the method update */
+void
+mc_init( mc_t *mc );
 
 /* Copies the data stored in mc1 into mc2 */
 void

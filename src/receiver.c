@@ -249,7 +249,7 @@ receiver_send_stab( int rep_id, int gen, png_t *png )
 		
 		
 		/* Send the data to the replica */
-		net_send_pack( rep->sock, (pack_t*)&pack );
+		net_send_pack( rep->sock, (void *)&pack, pack.size );
 
 	}
 

@@ -91,8 +91,7 @@ prop_thread( void* data )
 				g->data[png->id].type != GEN_NO_UP )
 			{
 				/* Copy the method data to the propagation package */
-				p_pack->updates[i].gen = g->data[png->id].data.gen;
-				strncpy( p_pack->updates[i].method_name, g->data[png->id].data.method_name, MC_METHOD_SIZE );
+				mc_copy( &g->data[png->id].data, &p_pack->updates[i] );
 				
 				/* Increase the array pointer to the package struct only when
 				 * we find a generation that needs propagation
@@ -131,7 +130,7 @@ prop_thread( void* data )
 		
 
 			/* Send the data to the replica */
-			net_send_pack( rep->sock, (pack_t*)p_pack );
+			net_send_pack( rep->sock, p_pack, p_pack->size );
 
 		}
 
