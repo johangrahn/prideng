@@ -20,7 +20,7 @@ int
 png_handle_cmd( png_t *png, char *cmd );
 
 int 
-png_handle_args(png_t *png, int argc, char **argv );
+png_handle_args( png_t *png, int argc, char **argv );
 
 int main( int argc, char **argv )
 {
@@ -186,6 +186,9 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			
 			cs_unlock( png->cs );
 		}
+		
+		cs_unlock( png->cs );
+		
 		return 1;
 	}
 	else if( strcmp( curr_cmd, "prop") == 0 )
