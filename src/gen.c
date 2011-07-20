@@ -46,6 +46,7 @@ gen_copy( gen_t *g )
 	for( it = 0; it < g->size; it++ )
 	{
 		g_new->data[it] = g->data[it];
+		mc_copy( &g->data[it].data , &g_new->data[it].data );
 	}
 
 	return g_new;

@@ -4,6 +4,9 @@
 #define MC_METHOD_SIZE 40
 #define MC_PARAM_MAX 5
 
+#include "dboid.h"
+
+
 /* Different parameter types that can be used */
 typedef enum
 {
@@ -24,6 +27,9 @@ typedef struct
 typedef struct 
 {
 	char 	method_name[MC_METHOD_SIZE];
+	
+	/* This is the unique identifier for each update */
+	char 	dboid[DBOID_SIZE];
 
 	/* Stores the generation number to what generation it belongs to */ 
 	int 	gen;
@@ -33,6 +39,10 @@ typedef struct
 	param_t params[MC_PARAM_MAX];
 	 
 } mc_t;
+
+/* Copies the data stored in mc1 into mc2 */
+void
+mc_copy( mc_t *mc1, mc_t *mc2 );
 
 #endif 
 
