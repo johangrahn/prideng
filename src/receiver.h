@@ -5,9 +5,6 @@
 #include "png.h"
 
 
-#define REC_PRINT( ... ) \
-	printf( "[Recevier Thread] " __VA_ARGS__ )
-
 /* 
  * Main receiver thread that receives data from the 
  * other replicas 
