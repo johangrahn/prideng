@@ -64,8 +64,11 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id )
 	g = cs_create_gen( cs );
 
 	up->gen = g->num;
-	g->data[rep_id].data = *up;
-	strncpy( g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
+	
+	/* Copies all method data into the conflict set */
+	mc_copy( up, &g->data[rep_id].data );
+
+	/* Sets the update type to update */
 	g->data[rep_id].type = GEN_UPDATE;
 	
 	printf( "Inserted <%s> into generation %d\n", up->method_name, up->gen );
@@ -91,10 +94,14 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 			/* Check that we are at the generation that is retreived */
 			if( g->num == up->gen )
 			{	
-				g->data[rep_id].data = *up;
-				strncpy(g->data[rep_id].data.method_name, up->method_name, MC_METHOD_SIZE );
+				
+				/* Copies all method data into the conflict set */
+				mc_copy( up, &g->data[rep_id].data );
+
+				/* Sets the update to the remote replica information */
 				g->data[rep_id].type = GEN_UPDATE;
 				
+				/* Sets the own information about the update */
 				g->data[own_id].type = GEN_NO_UP;
 
 				/* No need to create any more generations */
@@ -102,7 +109,12 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 			}
 			else
 			{
-				g->data[rep_id].type = GEN_NO_UP;
+				/* Inserts the data into the replica info */
+				mc_copy( up, &g->data[rep_id].data );
+				g->data[rep_id].type = GEN_UPDATE;
+				
+				/* Set that our own replica has no information about this
+				 * generation */
 				g->data[own_id].type = GEN_NO_UP;
 			}
 		}
@@ -391,8 +403,9 @@ cs_copy( cs_t *cs )
 		
 		for( y = 0; y < cs->gens[i]->size; y++ )
 		{
-			cs_n->gens[i]->data[i] = cs->gens[i]->data[i];
-			strcpy(	cs_n->gens[i]->data[i].data.method_name,  cs->gens[i]->data[i].data.method_name );
+			cs_n->gens[i]->data[y] = cs->gens[i]->data[y];
+			mc_copy( &cs->gens[i]->data[y].data, &cs_n->gens[i]->data[y].data );
+
 		}
 	}
 	

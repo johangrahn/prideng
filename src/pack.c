@@ -9,9 +9,9 @@ pack_create_prop( int size )
 	ppack_t *p;
 	int it;
 
-	p = malloc( sizeof( ppack_t ) + sizeof(mc_t) * ( size ) );
+	p = malloc( sizeof( ppack_t ) + (sizeof(mc_t) * ( size )) );
 
-	p->size = sizeof( ppack_t ) + sizeof(mc_t) * ( size );
+	p->size = sizeof( ppack_t ) + (sizeof(mc_t) * ( size ));
 	p->type = PROPAGATION;
 	
 	p->num_up = -1;
@@ -19,8 +19,7 @@ pack_create_prop( int size )
 
 	for( it = 0; it < size; it++ )
 	{
-		p->updates[it].gen = - 1;
-		memset( p->updates[it].method_name, 0, MC_METHOD_SIZE );
+		mc_init( &p->updates[it] );
 	}
 
 	return p;

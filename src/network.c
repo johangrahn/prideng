@@ -140,16 +140,17 @@ net_create_tcp_server( int port )
 }
 
 int
-net_send_pack( int socket, pack_t *p_pack )
+net_send_pack( int socket, void *data, int size )
 {
+	ppack_t *p_pack;
 	int sent,
 		left, 
 		total_sent,
 		plen;
 
+	p_pack = (ppack_t*) data;
 	total_sent = 0;
-	plen = p_pack->size;
-	left = plen;
+	left = plen = size;
 	
 	/* Tries to send the full package to the socket. If only a part of it is
 	 * send, we send the rest until the full package have been send

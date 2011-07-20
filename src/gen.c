@@ -12,6 +12,8 @@ gen_new( int replicas )
 	
 	g->size = replicas;
 
+	gen_reset( g );
+
 	return g;
 }
 
@@ -25,8 +27,7 @@ gen_reset( gen_t *g )
 	for( i = 0; i < g->size; i++ )
 	{
 		g->data[i].type = GEN_NONE;
-		g->data[i].data.gen = -1;
-		g->data[i].data.method_name[0] = '\0';
+		mc_init( &g->data[i].data );
 	}
 }
 
@@ -46,6 +47,7 @@ gen_copy( gen_t *g )
 	for( it = 0; it < g->size; it++ )
 	{
 		g_new->data[it] = g->data[it];
+		mc_copy( &g->data[it].data , &g_new->data[it].data );
 	}
 
 	return g_new;

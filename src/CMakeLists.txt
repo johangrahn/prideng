@@ -7,6 +7,7 @@ set( SOURCES
 	network.c
 	receiver.c
 	pack.c
+	mc.c
 )
 
 add_executable( prideng ${SOURCES} )

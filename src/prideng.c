@@ -165,17 +165,18 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			num_updates = atoi( updates );
 		else
 			num_updates = 1;
-		
+		/*	
 		cs = cs_create_trans_obj( png->cs );
-		
+		*/
 		for( it = 0; it < num_updates; it++ )
 		{
 			mc_t update;
+			strcpy( update.dboid, "id" );
 			strcpy(update.method_name, "metod" );
 			update.num_param 				= 1;
 			update.params[0].type 			= TYPE_INT;
 			update.params[0].data.int_data 	= 1;
-			
+				
 			cs_lock( png->cs );
 			
 			if( cs_insert( png->cs, &update, png->id ) == -1 )
