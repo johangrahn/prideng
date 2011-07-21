@@ -5,5 +5,9 @@
 	#define	DBOID_SIZE 40
 #endif 
 
+/* Generates a correct id into the memory pointed by id */
+void
+dboid_gen( char *id );
+
 #endif 
 

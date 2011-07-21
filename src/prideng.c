@@ -171,7 +171,10 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		for( it = 0; it < num_updates; it++ )
 		{
 			mc_t update;
-			strcpy( update.dboid, "id" );
+			dboid_gen( update.dboid );
+			
+			printf( "Generated ID: %s\n", update.dboid );
+
 			strcpy(update.method_name, "metod" );
 			update.num_param 				= 1;
 			update.params[0].type 			= TYPE_INT;

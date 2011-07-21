@@ -8,4 +8,6 @@ set( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR} )
 set( CMAKE_C_FLAGS "-D_POSIX_C_SOURCE=200112L")
 set( CMAKE_C_FLAGS_DEBUG "-g -Wall  -Wextra -pedantic " )
 
+
+include_directories( "/opt/local/include")
 add_subdirectory( src )
