@@ -171,7 +171,7 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		for( it = 0; it < num_updates; it++ )
 		{
 			mc_t update;
-			dboid_gen( update.dboid );
+			dboid_gen( "Object", update.dboid );
 			
 			printf( "Generated ID: %s\n", update.dboid );
 
