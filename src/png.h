@@ -11,8 +11,15 @@ typedef struct
 {
 	rep_list_t rlist;
 	cs_t *cs;
+	
+	/* Signal for when propagation is needed */
 	pthread_mutex_t *prop_sig_lock;
 	pthread_cond_t *prop_sig;
+	
+	/* Signal for when a conflict resolution is needed */
+	pthread_mutex_t *resolv_sig_lock;
+	pthread_cond_t *resolv_sig;
+	
 	
 	/* 
 		Port number where the application listens to 

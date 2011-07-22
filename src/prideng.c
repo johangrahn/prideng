@@ -30,6 +30,10 @@ int main( int argc, char **argv )
 	pthread_t 	p_thread,
 				r_thread;
 
+	/* Signal for when a conflict resolution is needed */
+	pthread_mutex_t resolv_sig_lock;
+	pthread_cond_t resolv_sig;
+
 	/* Signal that happends when conflict set 
 	 * needs to propagate a generation 
 	 */
@@ -39,13 +43,19 @@ int main( int argc, char **argv )
 	pthread_cond_init( &prop_signal, NULL );
 	pthread_mutex_init( &prop_sig_lock, NULL );
 
+	pthread_cond_init( &resolv_sig, NULL );
+	pthread_mutex_init( &resolv_sig_lock, NULL );
+	
 
 	/* Create confligt set that will be used in
 	 * the application 
 	 */
-	__conf.cs = cs_new( 10, 2 );
-	__conf.prop_sig = &prop_signal;
-	__conf.prop_sig_lock = &prop_sig_lock;
+	__conf.cs 				= cs_new( 10, 2 );
+	__conf.prop_sig 		= &prop_signal;
+	__conf.prop_sig_lock 	= &prop_sig_lock;
+	__conf.resolv_sig 		= &resolv_sig;
+	__conf.resolv_sig_lock 	= &resolv_sig_lock;
+	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );
 

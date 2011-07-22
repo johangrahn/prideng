@@ -425,5 +425,7 @@ cs_check_complete( cs_t *cs, gen_t *g )
 	if( gen_is_complete( g ) )
 	{
 		printf( "Generation %d is complete\n", g->num );
+		
+		/* Signal to conflict resolution to resolve the generation */
 	}
 }
