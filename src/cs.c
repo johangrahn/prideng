@@ -119,9 +119,6 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 				mc_copy( up, &g->data[rep_id].data );
 				g->data[rep_id].type = GEN_UPDATE;
 				
-				/* Set that our own replica has no information about this
-				 * generation */
-				g->data[own_id].type = GEN_NO_UP;
 				
 				cs_check_complete( cs, g );
 			}
