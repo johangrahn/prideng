@@ -3,6 +3,7 @@
 #include "png.h"
 #include "network.h"
 #include "receiver.h"
+#include "resolve.h"
 #include "imdb.h"
 
 #include <stdio.h>
@@ -28,11 +29,12 @@ int main( int argc, char **argv )
 	int			lsock;
 	int 		it;
 	pthread_t 	p_thread,
-				r_thread;
+				r_thread,
+				re_thread;
 
 	/* Signal for when a conflict resolution is needed */
-	pthread_mutex_t resolv_sig_lock;
-	pthread_cond_t resolv_sig;
+	pthread_mutex_t resolve_sig_lock;
+	pthread_cond_t resolve_sig;
 
 	/* Signal that happends when conflict set 
 	 * needs to propagate a generation 
@@ -43,8 +45,8 @@ int main( int argc, char **argv )
 	pthread_cond_init( &prop_signal, NULL );
 	pthread_mutex_init( &prop_sig_lock, NULL );
 
-	pthread_cond_init( &resolv_sig, NULL );
-	pthread_mutex_init( &resolv_sig_lock, NULL );
+	pthread_cond_init( &resolve_sig, NULL );
+	pthread_mutex_init( &resolve_sig_lock, NULL );
 	
 
 	/* Create confligt set that will be used in
@@ -53,8 +55,8 @@ int main( int argc, char **argv )
 	__conf.cs 				= cs_new( 10, 2 );
 	__conf.prop_sig 		= &prop_signal;
 	__conf.prop_sig_lock 	= &prop_sig_lock;
-	__conf.resolv_sig 		= &resolv_sig;
-	__conf.resolv_sig_lock 	= &resolv_sig_lock;
+	__conf.resolv_sig 		= &resolve_sig;
+	__conf.resolv_sig_lock 	= &resolve_sig_lock;
 	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );
@@ -80,10 +82,11 @@ int main( int argc, char **argv )
 	}
 
 	/* Create threads for propagation, 
-	 * and receving  
+	 * receving and resolving  
 	 */
 	pthread_create( &p_thread, NULL, prop_thread, &__conf );
 	pthread_create( &r_thread, NULL, receiver_thread, &__conf );
+	pthread_create( &re_thread, NULL, resolve_thread, &__conf );
 
 	for( it = 0; it < __conf.rlist.size; it++ )
 	{
@@ -136,6 +139,9 @@ int main( int argc, char **argv )
 
 	pthread_cond_destroy( &prop_signal );
 	pthread_mutex_destroy( &prop_sig_lock );
+	
+	pthread_cond_destroy( &resolve_sig );
+	pthread_mutex_destroy( &resolve_sig_lock );
 	
 	cs_free( __conf.cs );
 	rep_list_free( &__conf.rlist );

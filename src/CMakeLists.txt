@@ -10,6 +10,7 @@ set( SOURCES
 	mc.c
 	dboid.c
 	imdb.c
+	resolve.c
 )
 
 # This is for ossp-uuid 
