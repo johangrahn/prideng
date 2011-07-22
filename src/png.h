@@ -3,6 +3,7 @@
 
 #include "cs.h"
 #include "rep_list.h"
+#include "imdb.h"
 
 #include <pthread.h>
 
@@ -26,6 +27,10 @@ typedef struct
 
 	/* ID for the listen socket */
 	int lsock;
+	
+	/* Stable storage for objects */
+	imdb_t stable_db;
+	
 } png_t;
 
 png_t __conf;
