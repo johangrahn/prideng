@@ -9,6 +9,7 @@ set( SOURCES
 	pack.c
 	mc.c
 	dboid.c
+	imdb.c
 )
 
 # This is for ossp-uuid 

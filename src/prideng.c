@@ -3,8 +3,7 @@
 #include "png.h"
 #include "network.h"
 #include "receiver.h"
-
-#include <db.h>
+#include "imdb.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -12,18 +11,6 @@
 #include <pthread.h>
 #include <getopt.h>
 #include <unistd.h>
-
-
-typedef struct {
-	
-	DB_ENV *envp; 
-} imdb_t;
-
-
-/* Create the connection to the storage */ 
-int
-imdb_init( imdb_t *imdb );
-
 
 void 
 png_show_prompt();
@@ -40,7 +27,6 @@ int main( int argc, char **argv )
 	int 		res;
 	int			lsock;
 	int 		it;
-	imdb_t		imdb;
 	pthread_t 	p_thread,
 				r_thread;
 
@@ -61,6 +47,7 @@ int main( int argc, char **argv )
 	__conf.prop_sig = &prop_signal;
 	__conf.prop_sig_lock = &prop_sig_lock;
 	rep_list_init( &__conf.rlist );
+	imdb_init( &__conf.stable_db );
 
 	png_handle_args( &__conf, argc, argv );
 
@@ -112,8 +99,6 @@ int main( int argc, char **argv )
 			}
 		}
 	}
-		
-	imdb_init( &imdb );
 	
 	/* Start taking in user commands */
 	while( 1 )
@@ -155,7 +140,6 @@ void png_show_prompt()
 int png_handle_cmd( png_t *png,  char *cmd )
 {
 	char *curr_cmd;
-	cs_t *cs;
 	
 	curr_cmd = strtok( cmd, " " );
 		
@@ -328,42 +312,3 @@ png_handle_args(png_t *png, int argc, char **argv )
 	
 }
 
-int
-imdb_init( imdb_t *imdb )
-{
-	int				ret;
-	DB_ENV 			*envp;
-	u_int32_t 		envFlags;
-		
-	ret = db_env_create( &envp, 0 );
-	if( ret != 0 ) 
-	{
-		printf( "Failed to create anvironment for database store\n" );
-		exit(1);
-	}
-	
-	envFlags = 
-		DB_CREATE |
-		DB_INIT_LOCK |
-		DB_INIT_LOG | 
-		DB_INIT_TXN |
-		DB_INIT_MPOOL |
-		DB_PRIVATE /* Don't put region files on disk */
-	;
- 
-    /* Store database logs entirely in memory */
-    envp->log_set_config( envp, DB_LOG_IN_MEMORY, 1 ); 
-
-    /* Increase the cache size  */
-    envp->set_cachesize( envp, 0, 100 * 1024 * 1024, 1 ); 
-
-    envp->set_errfile( envp, stderr );
-	
-	ret = envp->open( envp, NULL, envFlags, 0 );
-	if( ret != 0 ) {
-		printf( "Failed to open environment for database store\n");
-		exit( 1 );
-	}
-	
-	imdb->envp = envp;
-}
