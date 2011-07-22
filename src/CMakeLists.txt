@@ -14,7 +14,8 @@ set( SOURCES
 # This is for ossp-uuid 
 link_directories (
 	"/opt/local/lib"
+	"/opt/local/lib/db47"
 )
 
 add_executable( prideng ${SOURCES} )
-target_link_libraries( prideng pthread uuid )
+target_link_libraries( prideng pthread uuid db)
