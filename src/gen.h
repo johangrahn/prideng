@@ -43,6 +43,10 @@ gen_copy( gen_t *g );
 void 
 gen_reset( gen_t *g );
 
+/* Returns 1 if the generation is complete, 0 otherwise */
+int 
+gen_is_complete( gen_t *g );
+
 /* Removes the memory allocated for the generation */
 void
 gen_free( gen_t *gen );

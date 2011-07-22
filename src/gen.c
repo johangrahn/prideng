@@ -53,6 +53,25 @@ gen_copy( gen_t *g )
 	return g_new;
 }
 
+int 
+gen_is_complete( gen_t *g )
+{
+	int it;
+	
+	/* Check status on each replica in the generation 
+	 * If any replica has no info on the generation, it is not complete */
+	for( it = 0; it < g->size; it++ )
+	{
+		if( g->data[it].type == GEN_NONE )
+		{
+			return 0;
+		}
+	}
+	
+	/* All replicas has info on the generation */
+	return 1;
+}
+	
 void
 gen_free( gen_t *gen )
 {

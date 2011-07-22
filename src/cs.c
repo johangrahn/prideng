@@ -15,6 +15,10 @@ cs_create_gen( cs_t *cs );
 int 
 cs_get_pos( cs_t *cs, int gen );
 
+/* Check if the given generation is complete and then notifys 
+ * the conflict resolution method */
+void
+cs_check_complete( cs_t *cs, gen_t *g );
 
 /* Creates a copy of the conflict set */
 cs_t *
@@ -103,7 +107,9 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 				
 				/* Sets the own information about the update */
 				g->data[own_id].type = GEN_NO_UP;
-
+				
+				cs_check_complete( cs, g );
+				
 				/* No need to create any more generations */
 				break;
 			}
@@ -116,6 +122,8 @@ cs_insert_remote( cs_t *cs, mc_t *up, int rep_id, int own_id)
 				/* Set that our own replica has no information about this
 				 * generation */
 				g->data[own_id].type = GEN_NO_UP;
+				
+				cs_check_complete( cs, g );
 			}
 		}
 		
@@ -161,6 +169,8 @@ cs_set_stab( cs_t *cs, int rep_id, int gen )
 		{
 			g->data[rep_id].type = GEN_NO_UP;
 		}
+		
+		cs_check_complete( cs, g );
 		
 		printf( "Updated stabilization info on gen %d on replica %d\n", gen, rep_id );
 	}
@@ -410,4 +420,13 @@ cs_copy( cs_t *cs )
 	}
 	
 	return cs_n;
+}
+
+void
+cs_check_complete( cs_t *cs, gen_t *g )
+{
+	if( gen_is_complete( g ) )
+	{
+		printf( "Generation %d is complete\n", g->num );
+	}
 }
