@@ -49,5 +49,9 @@ mc_init( mc_t *mc );
 void
 mc_copy( mc_t *mc1, mc_t *mc2 );
 
+/* Prints the information about the update to the console */
+void
+mc_print( mc_t *mc );
+
 #endif 
 

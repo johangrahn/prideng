@@ -46,3 +46,10 @@ mc_copy( mc_t *mc1, mc_t *mc2 )
 	}
 }
 
+void
+mc_print( mc_t *mc )
+{
+	printf( "<%s>", mc->method_name );
+}
+
+
