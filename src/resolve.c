@@ -1,5 +1,6 @@
 #include "resolve.h"
 #include "png.h"
+#include "object.h"
 
 #include <stdlib.h>
 
@@ -8,7 +9,7 @@ resolve_thread( void *data )
 {
 	png_t *conf;
 	gen_t *g;
-	
+	obj_t *obj;
 	conf = (png_t*) data;
 	
 	printf( "[Resolve Thread] Started.\n" );
@@ -24,11 +25,13 @@ resolve_thread( void *data )
 		g = cs_pop( conf->cs );
 		if( g != NULL )
 		{
+			imdb_fetch( &conf->stable_db, "obj", (void*)&obj );
+			
 			/* Get objet from the storage */
 			
 			/* Perform the update on the object */
 			
-			/* Put the object back to the store */
+			imdb_store( &conf->stable_db, "obj", obj, sizeof( obj_t) );
 		}		
 	}
 	
