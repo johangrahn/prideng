@@ -5,6 +5,7 @@
 #include "receiver.h"
 #include "resolve.h"
 #include "imdb.h"
+#include "object.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -31,6 +32,7 @@ int main( int argc, char **argv )
 	pthread_t 	p_thread,
 				r_thread,
 				re_thread;
+	obj_t		obj;
 
 	/* Signal for when a conflict resolution is needed */
 	pthread_mutex_t resolve_sig_lock;
@@ -55,12 +57,13 @@ int main( int argc, char **argv )
 	__conf.cs 				= cs_new( 10, 2 );
 	__conf.prop_sig 		= &prop_signal;
 	__conf.prop_sig_lock 	= &prop_sig_lock;
-	__conf.resolv_sig 		= &resolve_sig;
-	__conf.resolv_sig_lock 	= &resolve_sig_lock;
+	__conf.resolve_sig 		= &resolve_sig;
+	__conf.resolve_sig_lock	= &resolve_sig_lock;
 	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );
-
+	imdb_store( &__conf.stable_db, "obj", &obj, sizeof( obj_t ) );
+	
 	png_handle_args( &__conf, argc, argv );
 
 	if( __conf.id == -1 )

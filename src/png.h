@@ -17,8 +17,8 @@ typedef struct
 	pthread_cond_t *prop_sig;
 	
 	/* Signal for when a conflict resolution is needed */
-	pthread_mutex_t *resolv_sig_lock;
-	pthread_cond_t *resolv_sig;
+	pthread_mutex_t *resolve_sig_lock;
+	pthread_cond_t *resolve_sig;
 	
 	
 	/* 
