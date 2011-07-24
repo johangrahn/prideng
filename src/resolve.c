@@ -1,6 +1,7 @@
 #include "resolve.h"
 #include "png.h"
 #include "object.h"
+#include "btree.h"
 
 #include <stdlib.h>
 
