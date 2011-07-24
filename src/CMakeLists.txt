@@ -21,4 +21,4 @@ link_directories (
 )
 
 add_executable( prideng ${SOURCES} )
-target_link_libraries( prideng pthread uuid db)
+target_link_libraries( prideng pthread ossp-uuid uuid db)

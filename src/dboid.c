@@ -1,6 +1,6 @@
 #include "dboid.h"
 
-#include <ossp/uuid.h>
+#include <uuid.h>
 #include <stdlib.h>
 
 void
