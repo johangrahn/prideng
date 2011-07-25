@@ -5,10 +5,9 @@
 #include <string.h>
 
 btree_t *
-btree_create()
+btree_create(  )
 {
 	btree_t *tree;
-	
 	tree = malloc( sizeof( btree_t ) );
 	
 	tree->key[0]	= '\0';
@@ -22,40 +21,47 @@ btree_create()
 int 
 btree_insert( btree_t **tree, char *key, void *data)
 {
-	int cmp;
-	btree_t *curr;
+	int 		cmp;
+	btree_t 	*curr;
 	
 	if( *tree == NULL )
 	{
-		*tree 			= malloc( sizeof( btree_t ) );
-		(*tree)->left 	= NULL;
-		(*tree)->right 	= NULL;
-		
-		(*tree)->index = data;
+		*tree = btree_create();
 	}
 	else
 	{
 		curr = *tree;
-		while( !curr )
+		
+		while( curr )
 		{
-			
 			/* See if we create a node on the left or right side */
 			cmp = strcmp( (*tree)->key, key );
 
-			if( cmp == 0 )
+			if ( cmp > 0 )
 			{
-				printf( "Equal\n" );
+				if( curr->right == NULL )
+				{
+					curr->right = btree_create();
+					curr->right->index = data;
+				
+					return 1;
+				}
+			
+				curr = curr->right;
 			}
-			else if ( cmp > 0 )
+			else if( cmp < 0 )
 			{
-				/* Higher */
+				if( curr->left == NULL )
+				{
+					curr->left = btree_create();
+					curr->left->index = data;
+				
+					return 1;
+				}
+			
+				curr = curr->left;
 			}
-			else
-			{
-				/* Lower */
-			}
-		}
-	
+		}	
 	}
 	
 	return 1;

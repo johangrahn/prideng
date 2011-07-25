@@ -20,10 +20,6 @@ struct btree
 			*right;
 };
 
-/* Allocates memory for the first position */
-btree_t *
-btree_create( );
-
 /* Inserts the data with the given key into the tree */
 int 
 btree_insert( btree_t **tree, char *key, void *data );
