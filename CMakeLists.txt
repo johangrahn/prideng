@@ -10,5 +10,5 @@ set( CMAKE_C_FLAGS "")
 set( CMAKE_C_FLAGS_DEBUG "-g -Wall  -Wextra -pedantic " )
 
 
-include_directories( "/opt/local/include/db47" "/usr/include/ossp" "/opt/local/include" )
+include_directories( "/opt/local/include/db47" "/usr/include/ossp" "/opt/local/include/ossp" "/opt/local/include" )
 add_subdirectory( src )
