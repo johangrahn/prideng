@@ -2,6 +2,7 @@
 
 #include <uuid.h>
 #include <stdlib.h>
+#include <string.h>
 
 void
 dboid_gen( char *name, char *id )
