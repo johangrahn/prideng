@@ -23,4 +23,8 @@ imdb_store( imdb_t *imdb, char *key, void *data, size_t size );
 int 
 imdb_fetch( imdb_t *imdb, char *key, void **data );
 
+/* Closes the databse and the environment */
+void
+imdb_close( imdb_t *imdb );
+
 #endif

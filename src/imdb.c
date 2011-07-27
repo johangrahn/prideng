@@ -107,6 +107,13 @@ imdb_fetch( imdb_t *imdb, char *key_name, void **data )
 	return 1;
 }
 
+/* Closes the databse and the environment */
+void
+imdb_close( imdb_t *imdb )
+{
+	imdb->db->close( imdb->db, 0 );
+	imdb->envp->close( imdb->envp, 0 );
+}
 
 
 int
