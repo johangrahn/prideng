@@ -1,5 +1,7 @@
 #include "method_list.h"
 
+#include <stdlib.h>
+
 void 
 method_list_init( method_list_t *list )
 {
@@ -18,3 +20,19 @@ method_list_insert( method_list_t *list, char *key, method_prototype method )
 	btree_insert( &list->tree, key, list->curr );
 }
 
+method_prototype
+method_list_find( method_list_t *list, char *key )
+{
+	int index;
+	
+	index = btree_search( list->tree, key );
+	
+	if( index != -1 )
+	{
+		return list->methods[ index ];
+	}
+	else
+	{
+		return NULL;
+	}
+}

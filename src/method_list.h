@@ -25,4 +25,8 @@ method_list_init( method_list_t *list );
 void
 method_list_insert( method_list_t *list, char *key, method_prototype method );
 
+/* Finds the method for the given key */
+method_prototype
+method_list_find( method_list_t *list, char *key );
+
 #endif 
