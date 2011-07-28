@@ -12,6 +12,7 @@ set( SOURCES
 	imdb.c
 	resolve.c
 	btree.c
+	object.c
 )
 
 # This is for ossp-uuid 
