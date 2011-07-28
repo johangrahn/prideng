@@ -193,7 +193,7 @@ int png_handle_cmd( png_t *png,  char *cmd )
 			
 			printf( "Generated ID: %s\n", update.dboid );
 
-			strcpy(update.method_name, "metod" );
+			strcpy(update.method_name, "obj_inc" );
 			update.num_param 				= 1;
 			update.params[0].type 			= TYPE_INT;
 			update.params[0].data.int_data 	= 1;
