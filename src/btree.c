@@ -11,7 +11,7 @@ btree_create(  )
 	tree = malloc( sizeof( btree_t ) );
 	
 	tree->key[0]	= '\0';
-	tree->index 	= NULL;
+	tree->index 	= -1;
 	tree->left 		= NULL;
 	tree->right 	= NULL;
 	
@@ -19,7 +19,7 @@ btree_create(  )
 }
 
 int 
-btree_insert( btree_t **tree, char *key, void *data)
+btree_insert( btree_t **tree, char *key, int index )
 {
 	int 		cmp;
 	btree_t 	*curr;
@@ -27,6 +27,7 @@ btree_insert( btree_t **tree, char *key, void *data)
 	if( *tree == NULL )
 	{
 		*tree = btree_create();
+		(*tree)->index = index;
 	}
 	else
 	{
@@ -42,7 +43,7 @@ btree_insert( btree_t **tree, char *key, void *data)
 				if( curr->right == NULL )
 				{
 					curr->right = btree_create();
-					curr->right->index = data;
+					curr->right->index = index;
 				
 					return 1;
 				}
@@ -54,7 +55,7 @@ btree_insert( btree_t **tree, char *key, void *data)
 				if( curr->left == NULL )
 				{
 					curr->left = btree_create();
-					curr->left->index = data;
+					curr->left->index = index;
 				
 					return 1;
 				}

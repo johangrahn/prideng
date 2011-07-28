@@ -14,4 +14,4 @@ void
 obj_inc( obj_t *o, int num );
 
 void
-obj_inc_res( obj_t *o, param_t *params, int num_params );
+obj_inc_res( void *o, param_t *params, int num_params );

@@ -13,6 +13,7 @@ set( SOURCES
 	resolve.c
 	btree.c
 	object.c
+	method_list.c
 )
 
 # This is for ossp-uuid 

@@ -2,17 +2,26 @@
 #include "png.h"
 #include "object.h"
 #include "btree.h"
+#include "method_list.h"
 
 #include <stdlib.h>
+
+
 
 void* 
 resolve_thread( void *data )
 {
+	method_list_t m_list;
+	
 	png_t *conf;
 	gen_t *g;
 	obj_t *obj;
 	conf = (png_t*) data;
 	
+	method_list_init( &m_list );
+	
+	method_list_insert( &m_list, "obj_inc", &obj_inc_res );
+
 	printf( "[Resolve Thread] Started.\n" );
 	
 	while( 1 )
@@ -38,3 +47,4 @@ resolve_thread( void *data )
 	
 	return NULL;
 }
+

@@ -12,7 +12,7 @@ struct btree
 	char 	key[BTREE_KEY_MAX];
 	
 	/* Index pointer to the external data storage */
-	void 	*index;
+	int 	index;
 	
 	
 	/* Pointer to left and right directions */
@@ -20,8 +20,8 @@ struct btree
 			*right;
 };
 
-/* Inserts the data with the given key into the tree */
+/* Inserts the index data with the given key into the tree */
 int 
-btree_insert( btree_t **tree, char *key, void *data );
+btree_insert( btree_t **tree, char *key, int index );
 
 #endif
