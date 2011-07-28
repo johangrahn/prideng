@@ -261,23 +261,12 @@ int png_handle_cmd( png_t *png,  char *cmd )
 	}
 	
 	else if( strcmp( curr_cmd, "stab") == 0)
-	{
-		gen_t *g;
-
-		/* Fetches the oldest generation */
-		g = cs_pop( png->cs );
-		if( g != NULL )
-		{
-			printf( "Generation %d stabilized\n", g->num );
-			gen_free( g );
-		}
-		else
-		{
-			printf( "No generation to stabilize is found\n");
-		}
-
+	{	
+		pthread_mutex_lock( png->resolve_sig_lock );	
+		pthread_cond_signal( png->resolve_sig );
+		pthread_mutex_unlock( png->resolve_sig_lock );
+		
 		return 1;
-
 	}
 	else
 	{
