@@ -5,6 +5,7 @@
 void 
 method_list_init( method_list_t *list )
 {
+	list->tree = NULL;
 	list->curr = -1;
 }
 
@@ -17,7 +18,7 @@ method_list_insert( method_list_t *list, char *key, method_prototype method )
 	/* Store the method */
 	list->methods[ list->curr ] = method;
 	
-	btree_insert( &list->tree, key, list->curr );
+	list->tree = btree_insert( list->tree, key, list->curr );
 }
 
 method_prototype

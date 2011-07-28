@@ -21,8 +21,8 @@ struct btree
 };
 
 /* Inserts the index data with the given key into the tree */
-int 
-btree_insert( btree_t **tree, char *key, int index );
+btree_t * 
+btree_insert( btree_t *tree, char *key, int index );
 
 /* Returns the index from the given key */
 int 
