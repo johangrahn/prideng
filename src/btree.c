@@ -67,3 +67,32 @@ btree_insert( btree_t **tree, char *key, int index )
 	
 	return 1;
 }
+
+int 
+btree_search( btree_t *tree, char *key )
+{
+	btree_t *curr;
+	int 	cmp;
+	
+	curr = tree;
+	
+	while( curr )
+	{
+		cmp = strcmp( curr->key, key );
+		
+		if( cmp == 0)
+		{
+			return curr->index;
+		}
+		else if( cmp < 0 )
+		{
+			curr = curr->right;
+		}
+		else
+		{
+			curr = curr->left;
+		}
+	}
+	
+	return -1;
+}

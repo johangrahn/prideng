@@ -24,4 +24,8 @@ struct btree
 int 
 btree_insert( btree_t **tree, char *key, int index );
 
+/* Returns the index from the given key */
+int 
+btree_search( btree_t *tree, char *key );
+	
 #endif
