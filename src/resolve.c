@@ -60,7 +60,7 @@ resolve_thread( void *data )
 			
 			printf( "Performed method " );
 			mc_print( mc );
-			printf( " on obj with id %s\n", "str");
+			printf( " on obj with id %s\n", obj->dboid );
 			
 			/* Put the object back */
 			imdb_store( &conf->stable_db, "obj", obj, sizeof( obj_t ) );

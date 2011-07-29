@@ -69,6 +69,7 @@ int main( int argc, char **argv )
 	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );
+	dboid_gen( "Object", obj.dboid );
 	imdb_store( &__conf.stable_db, "obj", &obj, sizeof( obj_t ) );
 	
 	png_handle_args( &__conf, argc, argv );
