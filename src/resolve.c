@@ -58,6 +58,10 @@ resolve_thread( void *data )
 			/* Perform the method on the object */
 			method( obj, mc->params, mc->num_param );
 			
+			printf( "Performed method " );
+			mc_print( mc );
+			printf( " on obj with id %s\n", "str");
+			
 			/* Put the object back */
 			imdb_store( &conf->stable_db, "obj", obj, sizeof( obj_t ) );
 		}		

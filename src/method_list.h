@@ -19,6 +19,7 @@ typedef struct
 	int 				curr; 
 } method_list_t;
 
+/* Sets default values to the structure */
 void 
 method_list_init( method_list_t *list );
 

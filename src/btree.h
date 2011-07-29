@@ -1,7 +1,7 @@
 #ifndef __BTREE_H__
 #define __BTREE_H__
 
-
+/* The largest number of chars a key can have */
 #define BTREE_KEY_MAX 40
 
 typedef struct btree btree_t;

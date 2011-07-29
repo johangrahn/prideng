@@ -10,6 +10,7 @@ btree_create( char *key  )
 	btree_t *tree;
 	tree = malloc( sizeof( btree_t ) );
 	
+	/* Insert data and default values */
 	strcpy( tree->key, key );
 	tree->index 	= -1;
 	tree->left 		= NULL;
@@ -24,7 +25,7 @@ btree_insert( btree_t *tree, char *key, int index )
 	int 		cmp;
 	btree_t 	*curr,
 				*t;
-	
+	/* Check if the tree is empty */
 	if( tree == NULL )
 	{
 		t = btree_create( key );
