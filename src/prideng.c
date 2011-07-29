@@ -25,14 +25,16 @@ png_handle_args( png_t *png, int argc, char **argv );
 
 int main( int argc, char **argv )
 {
-	char 		cmd[40];
-	int 		res;
-	int			lsock;
-	int 		it;
-	pthread_t 	p_thread,
-				r_thread,
-				re_thread;
-	obj_t		obj;
+	char 			cmd[40];
+	int 			res;
+	int				lsock;
+	int 			it;
+	pthread_t 		p_thread,
+					r_thread,
+					re_thread;
+	obj_t			obj;
+	method_list_t 	m_list;
+	
 
 	/* Signal for when a conflict resolution is needed */
 	pthread_mutex_t resolve_sig_lock;
@@ -50,6 +52,10 @@ int main( int argc, char **argv )
 	pthread_cond_init( &resolve_sig, NULL );
 	pthread_mutex_init( &resolve_sig_lock, NULL );
 	
+	
+	method_list_init( &m_list );
+	method_list_insert( &m_list, "obj_inc", &obj_inc_res );
+	
 
 	/* Create confligt set that will be used in
 	 * the application 
@@ -59,6 +65,7 @@ int main( int argc, char **argv )
 	__conf.prop_sig_lock 	= &prop_sig_lock;
 	__conf.resolve_sig 		= &resolve_sig;
 	__conf.resolve_sig_lock	= &resolve_sig_lock;
+	__conf.m_list			= &m_list;
 	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );

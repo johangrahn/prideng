@@ -16,7 +16,7 @@ resolve( gen_t *g );
 void* 
 resolve_thread( void *data )
 {
-	method_list_t 		m_list;
+	method_list_t 		*m_list;
 	mc_t 				*mc;
 	method_prototype 	method;
 	resolve_function 	res_func;
@@ -25,11 +25,9 @@ resolve_thread( void *data )
 	obj_t 				*obj;
 	
 	conf = (png_t*) data;
-	
-	method_list_init( &m_list );
-	
-	method_list_insert( &m_list, "obj_inc", &obj_inc_res );
 
+	m_list = conf->m_list;
+	
 	/* Set default resolve function */
 	res_func = &resolve;
 	
@@ -55,7 +53,7 @@ resolve_thread( void *data )
 			printf( "Fetched method name: %s\n", mc->method_name );
 			
 			/* Fetch the function pointer */
-			method = method_list_find( &m_list, mc->method_name );
+			method = method_list_find( m_list, mc->method_name );
 			
 			/* Perform the method on the object */
 			method( obj, mc->params, mc->num_param );

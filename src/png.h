@@ -4,6 +4,7 @@
 #include "cs.h"
 #include "rep_list.h"
 #include "imdb.h"
+#include "method_list.h"
 
 #include <pthread.h>
 
@@ -20,7 +21,8 @@ typedef struct
 	pthread_mutex_t *resolve_sig_lock;
 	pthread_cond_t *resolve_sig;
 	
-	
+	/* Method list for all objects that is replicated */
+	method_list_t *m_list;
 	/* 
 		Port number where the application listens to 
 		for incoming connections
