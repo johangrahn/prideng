@@ -7,6 +7,8 @@
 
 #include <stdlib.h>
 
+/* Default conflict resolution function 
+ * Takes the first update in the replica set as update */
 mc_t*
 resolve( gen_t *g );
 	
@@ -17,6 +19,7 @@ resolve_thread( void *data )
 	method_list_t 		m_list;
 	mc_t 				*mc;
 	method_prototype 	method;
+	resolve_function 	res_func;
 	png_t 				*conf;
 	gen_t 				*g;
 	obj_t 				*obj;
@@ -27,6 +30,9 @@ resolve_thread( void *data )
 	
 	method_list_insert( &m_list, "obj_inc", &obj_inc_res );
 
+	/* Set default resolve function */
+	res_func = &resolve;
+	
 	printf( "[Resolve Thread] Started.\n" );
 	
 	while( 1 )
@@ -44,7 +50,7 @@ resolve_thread( void *data )
 			imdb_fetch( &conf->stable_db, "obj", (void*)&obj );
 			
 			/* Perform some conflict resolution */
-			mc = resolve( g );
+			mc = res_func( g );
 			
 			printf( "Fetched method name: %s\n", mc->method_name );
 			
