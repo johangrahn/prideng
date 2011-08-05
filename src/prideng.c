@@ -34,6 +34,7 @@ int main( int argc, char **argv )
 					re_thread;
 	obj_t			obj;
 	method_list_t 	m_list;
+	cs_t			*cs;
 	
 
 	/* Signal for when a conflict resolution is needed */
@@ -56,11 +57,21 @@ int main( int argc, char **argv )
 	method_list_init( &m_list );
 	method_list_insert( &m_list, "obj_inc", &obj_inc_res );
 	
-
+	dboid_gen( "Object", obj.dboid );
+	
 	/* Create confligt set that will be used in
 	 * the application 
 	 */
-	__conf.cs 				= cs_new( 10, 2 );
+	/*__conf.cs 				= cs_new( 10, 2 ); */
+	
+	cs = cs_new( 10, 2);
+	dboid_gen( "Object", cs->dboid );
+	
+	cs_list_init( &__conf.cs_list );
+	cs_list_insert( &__conf.cs_list, cs );	
+	
+	ev_queue_init( &__conf.prop_ev );
+	
 	__conf.prop_sig 		= &prop_signal;
 	__conf.prop_sig_lock 	= &prop_sig_lock;
 	__conf.resolve_sig 		= &resolve_sig;
@@ -69,7 +80,7 @@ int main( int argc, char **argv )
 	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );
-	dboid_gen( "Object", obj.dboid );
+	
 	imdb_store( &__conf.stable_db, "obj", &obj, sizeof( obj_t ) );
 	
 	png_handle_args( &__conf, argc, argv );
