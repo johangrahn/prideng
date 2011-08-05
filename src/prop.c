@@ -14,6 +14,7 @@ prop_thread( void* data )
 {
 	pthread_cond_t *prop_sig;
 	pthread_mutex_t *prop_sig_lock;
+	ev_queue_t		*prop_queue;
 	cs_t 			*cs;
 	gen_t 			*g;
 	png_t 			*png;
@@ -28,7 +29,7 @@ prop_thread( void* data )
 	prop_sig_lock 	= ((png_t*)data)->prop_sig_lock;
 	cs 				= ((png_t*)data)->cs;
 	rlist 			= &((png_t*)data)->rlist;
-		
+	prop_queue		= &((png_t*)data)->prop_queue;
 	
 	png = (png_t*) data;
 
@@ -37,10 +38,15 @@ prop_thread( void* data )
 	while( 1 )
 	{
 		/* locks the signal variable and waits */
+		/*
 		pthread_mutex_lock( prop_sig_lock );
 		pthread_cond_wait( prop_sig, prop_sig_lock  );
 		pthread_mutex_unlock( prop_sig_lock );
-
+		*/
+		
+		/* Listen for propagation events from Conflict sets */
+		ev_queue_listen( prop_queue );
+		
 		printf( "[Prop Thread] Recevied signal \n" );
 
 		/* Check if propagation has already been performed */

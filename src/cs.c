@@ -25,7 +25,7 @@ cs_t *
 cs_copy( cs_t *cs );
 
 cs_t *
-cs_new( int gen_size, int replicas ) 
+cs_new( int gen_size, int replicas, ev_queue_t *prop_queue ) 
 {
 	cs_t *cs;
 	int i;
@@ -52,6 +52,8 @@ cs_new( int gen_size, int replicas )
 	
 	pthread_mutex_init( &cs->lock, 0 );
 	
+	cs->prop_queue = prop_queue;
+	
 	return cs;
 }
 
@@ -76,6 +78,11 @@ cs_insert( cs_t *cs, mc_t *up, int rep_id )
 	g->data[rep_id].type = GEN_UPDATE;
 	
 	printf( "Inserted <%s> into generation %d\n", up->method_name, up->gen );
+	
+	/* Sending event to propagate to the propagator */
+	
+	ev_queue_push( cs->prop_queue, cs->dboid );
+	
 	return 1;
 
 }

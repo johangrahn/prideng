@@ -4,6 +4,7 @@
 #include "gen.h"
 #include "mc.h"
 #include "dboid.h"
+#include "ev_queue.h"
 
 #include <pthread.h>
 typedef struct c 
@@ -23,12 +24,14 @@ typedef struct c
 	/* Lock for accessing the structure */
 	pthread_mutex_t lock;
 	
+	ev_queue_t *prop_queue;
+	
 } cs_t;
 
 /* Creates a new conflict set with a defined 
  * number of generations and replicas */
 cs_t *
-cs_new( int gen_size, int replicas ); 
+cs_new( int gen_size, int replicas, ev_queue_t *prop_queue ); 
 
 /* Insert the update defined in up var
  *

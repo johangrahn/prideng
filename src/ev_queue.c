@@ -1,5 +1,7 @@
 #include "ev_queue.h"
 
+#include <stdio.h>
+
 void
 ev_queue_init( ev_queue_t *q )
 {
@@ -43,6 +45,8 @@ ev_queue_push(ev_queue_t *q, char *data )
 		q->q_data[ q->tail ] = data;
 	}
 	
+	printf( "Adding new event with id: %s\n", data );
+	
 	pthread_mutex_unlock( &q->write_mutex );
 }
 
@@ -56,6 +60,7 @@ ev_queue_pop( ev_queue_t *q )
 	data = q->q_data[ q->head++ ];
 	
 	pthread_mutex_unlock( &q->write_mutex );
+	
 	
 	return data;
 }

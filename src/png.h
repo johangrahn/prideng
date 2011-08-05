@@ -20,7 +20,7 @@ typedef struct
 	cs_list_t cs_list;
 	
 	/* Queue for all propagation events */
-	ev_queue_t prop_ev;
+	ev_queue_t prop_queue;
 	
 	/* Signal for when propagation is needed */
 	pthread_mutex_t *prop_sig_lock;

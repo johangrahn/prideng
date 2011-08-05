@@ -64,13 +64,16 @@ int main( int argc, char **argv )
 	 */
 	/*__conf.cs 				= cs_new( 10, 2 ); */
 	
-	cs = cs_new( 10, 2);
+	ev_queue_init( &__conf.prop_queue );
+		
+	cs = cs_new( 10, 2, &__conf.prop_queue );
+	
 	dboid_gen( "Object", cs->dboid );
 	
 	cs_list_init( &__conf.cs_list );
 	cs_list_insert( &__conf.cs_list, cs );	
 	
-	ev_queue_init( &__conf.prop_ev );
+
 	
 	__conf.prop_sig 		= &prop_signal;
 	__conf.prop_sig_lock 	= &prop_sig_lock;
