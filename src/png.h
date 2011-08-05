@@ -5,13 +5,22 @@
 #include "rep_list.h"
 #include "imdb.h"
 #include "method_list.h"
+#include "cs_list.h"
+#include "ev_queue.h"
 
 #include <pthread.h>
 
 typedef struct
 {
 	rep_list_t rlist;
+	
+	/* Deprecated: Use the cs list instead */
 	cs_t *cs;
+	
+	cs_list_t cs_list;
+	
+	/* Queue for all propagation events */
+	ev_queue_t prop_ev;
 	
 	/* Signal for when propagation is needed */
 	pthread_mutex_t *prop_sig_lock;
@@ -39,6 +48,8 @@ typedef struct
 	
 	/* Stable storage for objects */
 	imdb_t stable_db;
+	
+	
 	
 } png_t;
 

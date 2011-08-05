@@ -14,6 +14,8 @@ set( SOURCES
 	btree.c
 	object.c
 	method_list.c
+	cs_list.c
+	ev_queue.c
 )
 
 # This is for ossp-uuid 
