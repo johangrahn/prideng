@@ -3,6 +3,7 @@
 
 #include "gen.h"
 #include "mc.h"
+#include "dboid.h"
 
 #include <pthread.h>
 typedef struct c 
@@ -15,6 +16,9 @@ typedef struct c
 	gen_t **gens;
 	
 	int num_gen;
+	
+	/* The unique database id */
+	char dboid[ DBOID_SIZE ];
 	
 	/* Lock for accessing the structure */
 	pthread_mutex_t lock;
