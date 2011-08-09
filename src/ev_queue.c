@@ -7,7 +7,7 @@ ev_queue_init( ev_queue_t *q )
 {
 	q->head = -1;
 	q->tail = -1;
-	
+	q->size = 0;
 	pthread_mutex_init( &q->write_mutex, NULL );
 	
 	pthread_mutex_init( &q->sig_mutex, NULL );
@@ -19,8 +19,8 @@ ev_queue_listen( ev_queue_t *q )
 {
 	pthread_mutex_lock( &q->sig_mutex );
 	
-	/* Check if the queue is not empty */
-	if( q->head > q->tail || q->head == -1 )
+	/* Check if the queue is empty */
+	if( q->size == 0 )
 	{
 		pthread_cond_wait( &q->sig_cond, &q->sig_mutex );
 	}
@@ -41,9 +41,12 @@ ev_queue_push(ev_queue_t *q, char *data )
 	}
 	else
 	{
-		q->tail++;
+		/* q->tail++; */
+		q->tail = (q->tail + 1) % EV_QUEUE_SIZE;
 		q->q_data[ q->tail ] = data;
 	}
+	
+	q->size++;
 	
 	printf( "Adding new event with id: %s\n", data );
 	
@@ -62,7 +65,10 @@ ev_queue_pop( ev_queue_t *q )
 	
 	pthread_mutex_lock( &q->write_mutex );
 	
-	data = q->q_data[ q->head++ ];
+	data = q->q_data[ q->head ];
+	
+	q->head = (q->head + 1) % EV_QUEUE_SIZE;
+	q->size--;
 	
 	pthread_mutex_unlock( &q->write_mutex );
 	
