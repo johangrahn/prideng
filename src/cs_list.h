@@ -23,4 +23,7 @@ cs_list_insert( cs_list_t *list, cs_t *cs );
 cs_t *
 cs_list_find( cs_list_t *list, char *dboid );
 
+void
+cs_list_free( cs_list_t *list );
+
 #endif

@@ -37,3 +37,9 @@ method_list_find( method_list_t *list, char *key )
 		return NULL;
 	}
 }
+
+void
+method_list_free( method_list_t *list )
+{
+	btree_free( list->tree );
+}

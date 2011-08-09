@@ -101,3 +101,15 @@ btree_search( btree_t *tree, char *key )
 	
 	return -1;
 }
+
+void
+btree_free( btree_t *tree )
+{
+	if( tree->right != NULL )
+		btree_free( tree->right );
+
+	if( tree->left != NULL )
+		btree_free( tree->left );
+
+	free( tree );
+}

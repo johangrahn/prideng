@@ -63,11 +63,12 @@ net_create_tcp_socket( char *host, int port )
         break;
     }
 
-    if( p == NULL )  {
+    freeaddrinfo(servinfo); 
+    
+	if( p == NULL )  {
         return -1;
     }
 
-    freeaddrinfo(servinfo); 
 
     return connectSocket;
 

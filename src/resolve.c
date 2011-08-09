@@ -74,6 +74,8 @@ resolve_thread( void *data )
 			printf( "Conflict resolved generation %d\n", g->num );
 			
 			gen_free( g );
+
+			free( obj );
 		}		
 	}
 	

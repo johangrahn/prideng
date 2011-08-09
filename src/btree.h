@@ -27,5 +27,8 @@ btree_insert( btree_t *tree, char *key, int index );
 /* Returns the index from the given key */
 int 
 btree_search( btree_t *tree, char *key );
-	
+
+void
+btree_free( btree_t *tree );
+
 #endif

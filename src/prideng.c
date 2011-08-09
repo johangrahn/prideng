@@ -172,7 +172,8 @@ int main( int argc, char **argv )
 	
 	cs_free( __conf.cs );
 	rep_list_free( &__conf.rlist );
-	
+	cs_list_free( &__conf.cs_list );	
+	method_list_free( &m_list );
 	imdb_close( &__conf.stable_db );
 	return 0;
 }

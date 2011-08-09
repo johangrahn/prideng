@@ -30,4 +30,7 @@ method_list_insert( method_list_t *list, char *key, method_prototype method );
 method_prototype
 method_list_find( method_list_t *list, char *key );
 
+void
+method_list_free( method_list_t *list );
+
 #endif 

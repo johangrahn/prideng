@@ -40,3 +40,9 @@ cs_list_find( cs_list_t *list, char *dboid )
 		return NULL;
 	}
 }
+
+void
+cs_list_free( cs_list_t *list )
+{
+	btree_free( list->tree );
+}
