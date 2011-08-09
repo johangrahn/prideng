@@ -15,6 +15,7 @@ prop_thread( void* data )
 	pthread_cond_t *prop_sig;
 	pthread_mutex_t *prop_sig_lock;
 	ev_queue_t		*prop_queue;
+	char			*cs_dboid;
 	cs_t 			*cs;
 	gen_t 			*g;
 	png_t 			*png;
@@ -46,6 +47,12 @@ prop_thread( void* data )
 		
 		/* Listen for propagation events from Conflict sets */
 		ev_queue_listen( prop_queue );
+		
+		/* Get what conflict set that send the signal */
+		cs_dboid = ev_queue_pop( prop_queue );
+		
+		printf( "Finding the conflict set that sended the signal\n" );
+		cs = cs_list_find( &((png_t*)data)->cs_list, cs_dboid );
 		
 		printf( "[Prop Thread] Recevied signal \n" );
 

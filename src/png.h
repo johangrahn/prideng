@@ -22,6 +22,9 @@ typedef struct
 	/* Queue for all propagation events */
 	ev_queue_t prop_queue;
 	
+	/* Queue for all resolve events */
+	ev_queue_t res_queue;
+	
 	/* Signal for when propagation is needed */
 	pthread_mutex_t *prop_sig_lock;
 	pthread_cond_t *prop_sig;

@@ -25,7 +25,10 @@ cs_t *
 cs_copy( cs_t *cs );
 
 cs_t *
-cs_new( int gen_size, int replicas, ev_queue_t *prop_queue ) 
+cs_new( int gen_size, 
+		int replicas, 
+		ev_queue_t *prop_queue,
+		ev_queue_t *res_queue ) 
 {
 	cs_t *cs;
 	int i;
@@ -53,6 +56,7 @@ cs_new( int gen_size, int replicas, ev_queue_t *prop_queue )
 	pthread_mutex_init( &cs->lock, 0 );
 	
 	cs->prop_queue = prop_queue;
+	cs->res_queue = res_queue;
 	
 	return cs;
 }
@@ -434,5 +438,6 @@ cs_check_complete( cs_t *cs, gen_t *g )
 		printf( "Generation %d is complete\n", g->num );
 		
 		/* Signal to conflict resolution to resolve the generation */
+		ev_queue_push( cs->res_queue, cs->dboid );
 	}
 }

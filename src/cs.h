@@ -25,13 +25,18 @@ typedef struct c
 	pthread_mutex_t lock;
 	
 	ev_queue_t *prop_queue;
+	ev_queue_t *res_queue;
 	
 } cs_t;
 
 /* Creates a new conflict set with a defined 
  * number of generations and replicas */
 cs_t *
-cs_new( int gen_size, int replicas, ev_queue_t *prop_queue ); 
+cs_new( int gen_size, 
+		int replicas, 
+		ev_queue_t *prop_queue,
+		ev_queue_t *res_queue );
+			
 
 /* Insert the update defined in up var
  *

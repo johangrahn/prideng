@@ -18,14 +18,17 @@ resolve_thread( void *data )
 {
 	method_list_t 		*m_list;
 	mc_t 				*mc;
+	cs_t				*cs;
 	method_prototype 	method;
+	char				*cs_dboid;
 	resolve_function 	res_func;
+	ev_queue_t			*res_queue;
 	png_t 				*conf;
 	gen_t 				*g;
 	obj_t 				*obj;
 	
 	conf = (png_t*) data;
-
+	res_queue = &conf->res_queue;
 	m_list = conf->m_list;
 	
 	/* Set default resolve function */
@@ -36,12 +39,21 @@ resolve_thread( void *data )
 	while( 1 )
 	{
 		/* locks the signal variable and wait */
+		/*
 		pthread_mutex_lock( conf->resolve_sig_lock );
 		pthread_cond_wait( conf->resolve_sig, conf->resolve_sig_lock  );
 		pthread_mutex_unlock( conf->resolve_sig_lock );
+		*/
+		
+		ev_queue_listen( res_queue );
+		
+		/* Get what conflict set that send the signal */
+		cs_dboid = ev_queue_pop( res_queue );
+		
+		cs = cs_list_find( &((png_t*)data)->cs_list, cs_dboid );
 		
 		/* Fetch a generation that needs to be resolved */
-		g = cs_pop( conf->cs );
+		g = cs_pop( cs );
 		if( g != NULL )
 		{
 			/* Fetch the object from the storage */
@@ -50,20 +62,18 @@ resolve_thread( void *data )
 			/* Perform some conflict resolution */
 			mc = res_func( g );
 			
-			printf( "Fetched method name: %s\n", mc->method_name );
-			
 			/* Fetch the function pointer */
 			method = method_list_find( m_list, mc->method_name );
 			
 			/* Perform the method on the object */
 			method( obj, mc->params, mc->num_param );
 			
-			printf( "Performed method " );
-			mc_print( mc );
-			printf( " on obj with id %s\n", obj->dboid );
-			
 			/* Put the object back */
 			imdb_store( &conf->stable_db, "obj", obj, sizeof( obj_t ) );
+			
+			printf( "Conflict resolved generation %d\n", g->num );
+			
+			gen_free( g );
 		}		
 	}
 	

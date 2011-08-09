@@ -64,9 +64,11 @@ int main( int argc, char **argv )
 	 */
 	/*__conf.cs 				= cs_new( 10, 2 ); */
 	
+	/* Enable the queues */
 	ev_queue_init( &__conf.prop_queue );
-		
-	cs = cs_new( 10, 2, &__conf.prop_queue );
+	ev_queue_init( &__conf.res_queue );
+	
+	cs = cs_new( 10, 2, &__conf.prop_queue, &__conf.res_queue );
 	
 	dboid_gen( "Object", cs->dboid );
 	
@@ -74,7 +76,7 @@ int main( int argc, char **argv )
 	cs_list_insert( &__conf.cs_list, cs );	
 	
 
-	
+	__conf.cs 				= cs;
 	__conf.prop_sig 		= &prop_signal;
 	__conf.prop_sig_lock 	= &prop_sig_lock;
 	__conf.resolve_sig 		= &resolve_sig;
