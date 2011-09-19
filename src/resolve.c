@@ -48,7 +48,7 @@ resolve_thread( void *data )
 		ev_queue_listen( res_queue );
 		
 		/* Get what conflict set that send the signal */
-		cs_dboid = ev_queue_pop( res_queue );
+		cs_dboid = ev_queue_pop( res_queue );w
 		
 		cs = cs_list_find( &((png_t*)data)->cs_list, cs_dboid );
 		
