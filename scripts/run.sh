@@ -18,6 +18,9 @@ do
 	# Clear the config file 
 	echo -n "" > $CONFIG_FILE
 	
+	# Sets the ID of the replica 
+	echo "id $rep" >> $CONFIG_FILE
+	
 	# Create a rep command for each replica in the config file
 	for (( rep2 = 0; rep2 < $NUM_REPLICAS; rep2++ ))
 	do

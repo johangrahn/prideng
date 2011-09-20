@@ -293,6 +293,12 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		
 		return 1;
 	}
+	
+	else if( strcmp( curr_cmd, "id" ) == 0 )
+	{
+		png->id = atoi( strtok( NULL, " " ) );
+	}
+	
 	else
 	{
 		return -1;
