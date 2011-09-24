@@ -21,6 +21,8 @@ do
 	# Sets the ID of the replica 
 	echo "id $rep" >> $CONFIG_FILE
 	
+	echo "lport $[$START_PORT + $rep]" >> $CONFIG_FILE
+	
 	# Create a rep command for each replica in the config file
 	for (( rep2 = 0; rep2 < $NUM_REPLICAS; rep2++ ))
 	do
