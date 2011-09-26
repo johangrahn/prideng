@@ -16,6 +16,7 @@ set( SOURCES
 	method_list.c
 	cs_list.c
 	ev_queue.c
+	timer.c
 )
 
 # This is for ossp-uuid 
