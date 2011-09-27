@@ -175,6 +175,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 	ppack_t 	*prop_pack;
 	spack_t		*spack;
 	cs_t 		*cs;
+	char		*dboid;
 	int			it;
 
 	if( size < sizeof( pack_t ) )
@@ -197,8 +198,10 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 			prop_pack = (ppack_t*) data; 
 			printf( "Detected a propagation package from replica %d with %d updates \n", prop_pack->rep_id, prop_pack->num_up );	
 			
+			dboid = prop_pack->dboid;
 			cs_lock( cs );	
-					
+			
+				
 			for( it = 0; it < prop_pack->num_up; it++ )
 			{
 				/* If the insert adds generations, we need to send

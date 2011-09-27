@@ -83,6 +83,8 @@ prop_thread( void* data )
 		/* Create a propagation package to send */
 		p_pack = pack_create_prop( end_gen - start_gen + 1 );
 		p_pack->rep_id = png->id;
+		strcpy( p_pack->dboid, cs_dboid );
+		
 		p_pack->num_up = end_gen - start_gen + 1;
 		
 		i = 0;

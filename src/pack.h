@@ -25,6 +25,7 @@ typedef struct
 	pack_type 	type;
 	
 	int 		rep_id;
+	char*		dboid;
 	int 		num_up;
 	mc_t 		updates[1];
 	
