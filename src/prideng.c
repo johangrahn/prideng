@@ -75,8 +75,6 @@ int main( int argc, char **argv )
 	cs_list_init( &__conf.cs_list );
 	cs_list_insert( &__conf.cs_list, cs );	
 	
-
-	__conf.cs 				= cs;
 	__conf.prop_sig 		= &prop_signal;
 	__conf.prop_sig_lock 	= &prop_sig_lock;
 	__conf.resolve_sig 		= &resolve_sig;
