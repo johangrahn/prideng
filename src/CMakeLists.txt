@@ -16,8 +16,14 @@ set( SOURCES
 	method_list.c
 	cs_list.c
 	ev_queue.c
-	timer.c
+#	timer.c
+	hash_table.c
 )
+
+if(TIMER_TEST)
+	set( SOURCES ${SOURCES} timer.c )
+	
+endif()
 
 # This is for ossp-uuid 
 link_directories (

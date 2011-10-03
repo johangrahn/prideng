@@ -201,7 +201,13 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 			dboid = prop_pack->dboid;
 			cs_lock( cs );	
 			
-				
+			/* Timer code */
+			
+#ifdef TIMER_TEST
+
+#endif
+			
+			
 			for( it = 0; it < prop_pack->num_up; it++ )
 			{
 				/* If the insert adds generations, we need to send
