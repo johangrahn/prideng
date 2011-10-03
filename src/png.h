@@ -7,6 +7,7 @@
 #include "method_list.h"
 #include "cs_list.h"
 #include "ev_queue.h"
+#include "hash_table.h"
 
 #include <pthread.h>
 
@@ -52,7 +53,8 @@ typedef struct
 	/* Stable storage for objects */
 	imdb_t stable_db;
 	
-	
+	/* Table for timers */
+	h_table_t 	timers;
 	
 } png_t;
 
