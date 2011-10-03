@@ -83,10 +83,15 @@ int main( int argc, char **argv )
 	__conf.resolve_sig_lock	= &resolve_sig_lock;
 	__conf.m_list			= &m_list;
 	
+	h_table_init( &__conf.timers, 10, sizeof( struct timeval ) );
+	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );
 	
 	imdb_store( &__conf.stable_db, "obj", &obj, sizeof( obj_t ) );
+	
+	/* Add timer for the dboid */
+	h_table_insert( &__conf.timers, cs->dboid, malloc( sizeof( struct timeval ) * 10 ) );
 	
 	png_handle_args( &__conf, argc, argv );
 
