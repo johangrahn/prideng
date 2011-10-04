@@ -189,7 +189,7 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 	pack = (pack_t*) data;
 
 	/* Fetch conflict set that is affected */
-	cs = png->cs;
+	/* cs = png->cs; */
 			
 
 	switch( pack->type )
@@ -199,6 +199,9 @@ receiver_process_pack( char *data, size_t size, png_t *png )
 			printf( "Detected a propagation package from replica %d with %d updates \n", prop_pack->rep_id, prop_pack->num_up );	
 			
 			dboid = prop_pack->dboid;
+			
+			cs = cs_list_find( &png->cs_list, dboid );
+			
 			cs_lock( cs );	
 			
 			/* Timer code */
