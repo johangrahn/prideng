@@ -22,7 +22,7 @@ dboid_gen( char *name, char *id )
 	uuid_destroy(uuid_ns); 
 	uuid_destroy(uuid); 
 	
-	strncpy(id, str, DBOID_SIZE );
+	strncpy(id, str, 4 ); 
 	
 	free( str );
 }
