@@ -52,7 +52,8 @@ prop_thread( void* data )
 		cs_dboid = ev_queue_pop( prop_queue );
 		
 		printf( "Finding the conflict set that sended the signal\n" );
-		cs = cs_list_find( &((png_t*)data)->cs_list, cs_dboid );
+		/*cs = cs_list_find( &((png_t*)data)->cs_list, cs_dboid ); */
+		cs = h_table_find(&(((png_t*)data)->cs_list), cs_dboid );
 		
 		printf( "[Prop Thread] Recevied signal \n" );
 
