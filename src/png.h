@@ -18,7 +18,7 @@ typedef struct
 	/* Deprecated: Use the cs list instead */
 	cs_t *cs;
 	
-	cs_list_t cs_list;
+	h_table_t cs_list;
 	
 	/* Queue for all propagation events */
 	ev_queue_t prop_queue;

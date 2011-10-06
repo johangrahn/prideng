@@ -7,7 +7,7 @@
 
 /* Generates a correct id into the memory pointed by id */
 void
-dboid_gen( char *name, char *id );
+dboid_gen( char *name, char **id );
 
 #endif 
 

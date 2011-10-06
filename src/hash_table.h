@@ -28,6 +28,10 @@ h_table_insert( h_table_t *table, char *key, void *data );
 void *
 h_table_find( h_table_t *table, char *key );
 
+/* Removes the entry from the table */
+void
+h_table_remove( h_table_t *table, char *key );
+
 /* Free all memory used by the hash table */
 void 
 h_table_free( h_table_t *table );

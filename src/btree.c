@@ -81,11 +81,11 @@ btree_search( btree_t *tree, char *key )
 	
 	curr = tree;
 	
-	while( curr )
+	while( curr != NULL )
 	{
 		cmp = strcmp( curr->key, key );
 		
-		if( cmp == 0)
+		if( cmp == 0 )
 		{
 			return curr->index;
 		}
@@ -100,6 +100,33 @@ btree_search( btree_t *tree, char *key )
 	}
 	
 	return -1;
+}
+
+void 
+btree_remove( btree_t *tree, char *key )
+{
+	btree_t *curr;
+	int		cmp;
+	
+	curr = tree;
+	
+	while( curr )
+	{
+		cmp = strcmp( curr->key, key );
+		
+		if( cmp == 0)
+		{
+			btree_free( curr );
+		}
+		else if( cmp < 0 )
+		{
+			curr = curr->right;
+		}
+		else
+		{
+			curr = curr->left;
+		}
+	}
 }
 
 void

@@ -1,11 +1,12 @@
 #include "hash_table.h"
 
-
+#include <stdio.h>
 void
 h_table_init( h_table_t *table, size_t size, size_t data_size )
 {
 	table->data_arr = malloc( size * data_size );
 	table->curr = -1;
+	table->tree = NULL;
 }
 
 void 
@@ -37,6 +38,12 @@ h_table_find( h_table_t *table, char *key )
 	}
 }
 
+/* Removes the entry from the table */
+void
+h_table_remove( h_table_t *table, char *key )
+{
+	btree_remove( table->tree, key );
+}
 
 void 
 h_table_free( h_table_t *table )

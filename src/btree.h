@@ -2,7 +2,7 @@
 #define __BTREE_H__
 
 /* The largest number of chars a key can have */
-#define BTREE_KEY_MAX 40
+#define BTREE_KEY_MAX 45
 
 typedef struct btree btree_t;
 
@@ -27,6 +27,10 @@ btree_insert( btree_t *tree, char *key, int index );
 /* Returns the index from the given key */
 int 
 btree_search( btree_t *tree, char *key );
+
+/* Removes the node from the tree */
+void 
+btree_remove( btree_t *tree, char *key );
 
 void
 btree_free( btree_t *tree );

@@ -71,9 +71,7 @@ int main( int argc, char **argv )
 	cs = cs_new( 10, 2, &__conf.prop_queue, &__conf.res_queue );
 	
 	dboid_gen( "Object", cs->dboid );
-	
-	cs_list_init( &__conf.cs_list );
-	cs_list_insert( &__conf.cs_list, cs );	
+		
 	
 	__conf.prop_sig 		= &prop_signal;
 	__conf.prop_sig_lock 	= &prop_sig_lock;
@@ -82,6 +80,7 @@ int main( int argc, char **argv )
 	__conf.m_list			= &m_list;
 	
 	h_table_init( &__conf.timers, 10, sizeof( struct timeval ) );
+	h_table_init( &__conf.cs_list, 10, sizeof( cs_t ) );
 	
 	rep_list_init( &__conf.rlist );
 	imdb_init( &__conf.stable_db );
@@ -175,7 +174,7 @@ int main( int argc, char **argv )
 	
 	cs_free( __conf.cs );
 	rep_list_free( &__conf.rlist );
-	cs_list_free( &__conf.cs_list );	
+	h_table_free( &__conf.cs_list );	
 	method_list_free( &m_list );
 	imdb_close( &__conf.stable_db );
 	return 0;
@@ -201,43 +200,96 @@ int png_handle_cmd( png_t *png,  char *cmd )
 		printf( "Quiting..\n" );
 		return 0;
 	}
+	
+	/* Add object and conflict set to the system */
+	else if( strcmp( curr_cmd, "addo" ) == 0 )
+	{
+		cs_t *cs;
+		char *dboid;
+		char *name;
+		
+		
+		/* Fetch the object name */
+		name = strtok( NULL, " " );
+		
+		/* Create the database id */
+		dboid_gen( name, &dboid );
+		
+		
+		
+		/* Create a new conflict set for the object */
+		cs = cs_new( 10, 2, &png->prop_queue, &png->res_queue );
+		strcpy( cs->dboid, dboid );
+		
+		if( h_table_find( &png->cs_list, dboid ) == NULL )
+		{
+			h_table_insert( &png->cs_list, dboid, cs );
+			printf( "Created object with ID: %s\n", dboid );
+		}
+		else
+		{	
+			h_table_remove( &png->cs_list, dboid );
+			h_table_insert( &png->cs_list, dboid, cs );
+			printf( "Created and removed object with ID: %s\n", dboid );
+		}
+		
+		
+		return 1;
+	}
+	
 	else if( strcmp( curr_cmd, "add" ) == 0 )
 	{
 		int num_updates, it;
 		char *updates;
+		char *dboid;
+		char *name;
+		cs_t *cs;
+		
+		name = strtok( NULL, " " );
+		dboid_gen( name, &dboid );
+		
+		cs = h_table_find( &png->cs_list, dboid ); 
+		
+		if( cs == NULL )
+		{
+			printf( "Conflict set with id %s is not found!", dboid );
+			return 1;
+		}
 		
 		updates = strtok( NULL, " " );
 		if( updates != NULL)
 			num_updates = atoi( updates );
 		else
 			num_updates = 1;
+		
+		
+		
 		/*	
 		cs = cs_create_trans_obj( png->cs );
 		*/
 		for( it = 0; it < num_updates; it++ )
 		{
 			mc_t update;
-			dboid_gen( "Object", update.dboid );
 			
-			printf( "Generated ID: %s\n", update.dboid );
+			strcpy( update.dboid, dboid );
 
 			strcpy(update.method_name, "obj_inc" );
 			update.num_param 				= 1;
 			update.params[0].type 			= TYPE_INT;
 			update.params[0].data.int_data 	= 1;
 				
-			cs_lock( png->cs );
+			cs_lock( cs );
 			
-			if( cs_insert( png->cs, &update, png->id ) == -1 )
+			if( cs_insert( cs, &update, png->id ) == -1 )
 			{
 				printf( "Conflict set is full!\n" );
 				break;
 			}
 			
-			cs_unlock( png->cs );
+			cs_unlock( cs );
 		}
 		
-		cs_unlock( png->cs );
+		cs_unlock( cs );
 		
 		return 1;
 	}

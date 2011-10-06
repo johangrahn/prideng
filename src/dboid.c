@@ -5,7 +5,7 @@
 #include <string.h>
 
 void
-dboid_gen( char *name, char *id )
+dboid_gen( char *name, char **id )
 {
 	uuid_t *uuid; 
 	uuid_t *uuid_ns;
@@ -22,7 +22,10 @@ dboid_gen( char *name, char *id )
 	uuid_destroy(uuid_ns); 
 	uuid_destroy(uuid); 
 	
-	strncpy(id, str, 4 ); 
+	*id = str;
+	/*
+	strncpy(id, str, 8 ); 
 	
 	free( str );
+	*/
 }
